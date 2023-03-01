@@ -1,0 +1,134 @@
+@import '../../global';
+
+.player {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100vw;
+    height: 100vh;
+
+    .player-container {
+        position: relative;
+
+        .col-controls {
+            display: flex;
+            justify-content: center;
+
+            .btn-randomize {
+                position: absolute;
+                right: 0;
+                
+                > svg {
+                    fill: $secondary;
+                }
+
+                &:hover {
+                    > svg {
+                        animation: fill 1s ease-in-out;
+                        fill: darken($secondary, 20%);
+                    }
+                }
+            }
+        }
+
+        .search-box {
+            position: relative;
+
+            >input {
+                width: calc(250px - 14px);
+                padding: 5px;
+                border: 2px solid #000000;
+                outline: none;
+            }
+
+            ul {
+                position: absolute;
+                width: 236px;
+                max-height: 180px;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+
+                >li {
+                    border: 2px solid black;
+                    background-color: $primary;
+                    border-top: 0;
+                    padding: 5px;
+
+                    // &:first-child {
+                    //     // border-top: 2px solid black;
+                    // }
+
+                    &.active {
+                        cursor: pointer;
+                        background-color: lighten(grey, 20%);
+                    }
+
+                    &:hover {
+                        cursor: pointer;
+                        background-color: grey;
+                    }
+                }
+
+                &.hide {
+                    display: none;
+                }
+            }
+        }
+
+        .progress-bar {
+            border-radius: 10px;
+            border: 1px solid black;
+
+            &-container {
+                height: 20px;
+                background-color: $secondary;
+                transition: width 0.2s linear;
+
+                &.playing {
+                    transition: width 1s linear;
+                }
+            }
+
+            &-line {
+                position: absolute;
+                height: 20px;
+                border-right: 1px solid black;
+            }
+
+            &::before {
+                content: attr(data-currentTime);
+                position: absolute;
+                left: -40px;
+            }
+
+            &::after {
+                content: "0:30";
+                position: absolute;
+                right: -40px;
+            }
+        }
+    }
+}
+
+.modal {
+    &-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        img {
+            width: 70%;
+            border-radius: 5px;
+        }
+
+        h1 {
+            margin-top: 20px;
+            text-align: center;
+        }
+    }
+
+    &-footer {
+        justify-content: center !important;
+    }
+}

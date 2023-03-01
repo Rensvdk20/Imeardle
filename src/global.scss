@@ -1,0 +1,35 @@
+$white: #FFFFFF;
+$primary: #252526;
+$secondary: #EB3372;
+
+body {
+    color: $white;
+    background-color: $primary;
+}
+
+#player {
+    position: absolute;
+    visibility: hidden;
+}
+
+// Buttons
+.btn {
+    color: $white;
+    border: none;
+    outline: none;
+}
+
+.btn-controls {
+    text-align: center;
+    width: fit-content;
+    transition: all ease-in-out 1s;
+}
+
+.modal {
+    border: 1px solid $white;
+
+    &-content {
+        color: $white;
+        background-color: $primary;
+    }
+}
