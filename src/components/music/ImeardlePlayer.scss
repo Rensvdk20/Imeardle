@@ -8,7 +8,43 @@
     height: 100vh;
 
     .player-container {
+        margin-top: 40px;
         position: relative;
+
+        .col-progress-bar {
+            .progress-bar {
+                border-radius: 10px;
+                border: 1px solid black;
+    
+                &-container {
+                    height: 20px;
+                    background-color: $secondary;
+                    transition: width 0.2s linear;
+    
+                    &.playing {
+                        transition: width 1s linear;
+                    }
+                }
+    
+                &-line {
+                    position: absolute;
+                    height: 20px;
+                    border-right: 1px solid black;
+                }
+    
+                &::before {
+                    content: attr(data-currentTime);
+                    position: absolute;
+                    left: -40px;
+                }
+    
+                &::after {
+                    content: "0:30";
+                    position: absolute;
+                    right: -40px;
+                }
+            }
+        }
 
         .col-controls {
             display: flex;
@@ -31,81 +67,59 @@
             }
         }
 
-        .search-box {
-            position: relative;
+        .col-search-box {
+            margin-top: 40px;
 
-            >input {
-                width: calc(250px - 14px);
-                padding: 5px;
-                border: 2px solid #000000;
-                outline: none;
-            }
+            .search-box {
+                position: relative;
+    
+                >input {
+                    width: 100%;
+                    padding: 7.5px;
+                    color: $white;
+                    border: 1px solid gray;
+                    background-color: darken($primary, 1);
+                    outline: none;
 
-            ul {
-                position: absolute;
-                width: 236px;
-                max-height: 180px;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-
-                >li {
-                    border: 2px solid black;
-                    background-color: $primary;
-                    border-top: 0;
-                    padding: 5px;
-
-                    // &:first-child {
-                    //     // border-top: 2px solid black;
-                    // }
-
-                    &.active {
-                        cursor: pointer;
-                        background-color: lighten(grey, 20%);
-                    }
-
-                    &:hover {
-                        cursor: pointer;
-                        background-color: grey;
+                    &:disabled {
+                        cursor: not-allowed;
                     }
                 }
-
-                &.hide {
-                    display: none;
+    
+                ul {
+                    position: absolute;
+                    border: 1px solid $gray;
+                    width: 100%;
+                    max-height: 180px;
+                    margin: 0;
+                    padding: 0;
+                    overflow: hidden;
+    
+                    >li {
+                        border-bottom: 2px solid $gray;
+                        background-color: $primary;
+                        border-top: 0;
+                        padding: 5px;
+    
+                        &:last-child {
+                            border-bottom: 0;
+                        }
+    
+                        &.active {
+                            cursor: pointer;
+                            background-color: lighten(grey, 20%);
+                        }
+    
+                        &:hover {
+                            cursor: pointer;
+                            background-color: grey;
+                        }
+                    }
+    
+                    &.hide {
+                        display: none;
+                    }
                 }
-            }
-        }
-
-        .progress-bar {
-            border-radius: 10px;
-            border: 1px solid black;
-
-            &-container {
-                height: 20px;
-                background-color: $secondary;
-                transition: width 0.2s linear;
-
-                &.playing {
-                    transition: width 1s linear;
-                }
-            }
-
-            &-line {
-                position: absolute;
-                height: 20px;
-                border-right: 1px solid black;
-            }
-
-            &::before {
-                content: attr(data-currentTime);
-                position: absolute;
-                left: -40px;
-            }
-
-            &::after {
-                content: "0:30";
-                position: absolute;
-                right: -40px;
             }
         }
     }
