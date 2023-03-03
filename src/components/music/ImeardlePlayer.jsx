@@ -613,11 +613,13 @@ const ImeardlePlayer = () => {
 	// ##### Imeardle player #####
 	const player = useRef(null);
 	const [playerState, setPlayerState] = useState(state);
-	const { playing, volume, played, playedInSeconds } = playerState;
+	const { playing, volume, playedInSeconds } = playerState;
 
 	const [modalMessageState, setModalMessageState] = useState("");
 	const [randomizeButtonCooldown, setRandomizeButtonCooldown] =
 		useState(false);
+
+	const [guessed, setGuessedState] = useState(false);
 
 	// Current song
 	const [currentSong, setCurrentSong] = useState({
@@ -652,6 +654,9 @@ const ImeardlePlayer = () => {
 
 		// Reset guess state
 		setGuessState(guessStates[0]);
+
+		//Set guessed to false
+		setGuessedState(false);
 
 		// Set the song to the beginning
 		handleStartFromBeginning();
@@ -698,6 +703,8 @@ const ImeardlePlayer = () => {
 			// Correct answer
 			// View the song
 			openModal();
+
+			setGuessedState(true);
 
 			// Empty user input & Set select dropdown item to 0
 			setUserInput("");
@@ -817,25 +824,9 @@ const ImeardlePlayer = () => {
 		player?.current?.seekTo(0);
 	};
 
-	const handleSeekChange = (e) => {
-		setPlayerState({ ...playerState, played: parseFloat(e.target.value) });
-		player?.current?.seekTo(parseFloat(e.target.value));
-	};
-
 	// Game functions
 
 	const increaseGuessState = () => {
-		// setPlayerState({
-		// 	...playerState,
-		// 	playing: false,
-		// 	playedInSeconds: 0,
-		// 	played: 0,
-		// });
-
-		// if (player) {
-		// 	player.current?.seekTo(0);
-		// }
-
 		handleStartFromBeginning();
 		setGuessState(guessStates[guessStates.indexOf(guessState) + 1]);
 	};
@@ -929,8 +920,6 @@ const ImeardlePlayer = () => {
 									))}
 								</div>
 							</div>
-							{/* <span className="currentTime">Time: {playedInSeconds.toFixed(0)}</span>
-                            <span className="endTime">0:30</span> */}
 
 							<p>
 								Guesses left:{" "}
@@ -964,6 +953,12 @@ const ImeardlePlayer = () => {
 									value={userInput}
 									onChange={userInputHandler}
 									onKeyDown={handleDropdownArrowKeys}
+									placeholder={
+										guessed
+											? "Randomize a new song"
+											: "Guess the song..."
+									}
+									disabled={guessed ? true : false}
 								/>
 								<ul
 									className={

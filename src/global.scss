@@ -1,4 +1,5 @@
 $white: #FFFFFF;
+$gray: #999999;
 $primary: #252526;
 $secondary: #EB3372;
 
@@ -25,9 +26,8 @@ body {
     transition: all ease-in-out 1s;
 }
 
+// Bootstrap
 .modal {
-    border: 1px solid $white;
-
     &-content {
         color: $white;
         background-color: $primary;
