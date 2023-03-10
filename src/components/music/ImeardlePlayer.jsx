@@ -5,7 +5,12 @@ import ReactPlayer from "react-player";
 import ReactCanvasConfetti from "react-canvas-confetti";
 
 import "./ImeardlePlayer.scss";
-import { BsPlayCircle, BsPauseCircle, BsMusicNoteBeamed } from "react-icons/bs";
+import {
+	BsPlayCircle,
+	BsPauseCircle,
+	BsMusicNoteBeamed,
+	BsGithub,
+} from "react-icons/bs";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
@@ -889,7 +894,7 @@ const ImeardlePlayer = () => {
 
 	return (
 		<div className="row player">
-			<div className="col-4">
+			<div className="col-12 col-sm-8 col-pps col-md-8 col-lg-6 col-xl-6 col-xxl-4">
 				<div className="player-container">
 					<div className="row">
 						<div className="col-12 col-progress-bar">
@@ -921,7 +926,7 @@ const ImeardlePlayer = () => {
 								</div>
 							</div>
 
-							<p>
+							<p className="guesses-left">
 								Guesses left:{" "}
 								{guessStates.length -
 									guessStates.indexOf(guessState)}
@@ -1018,6 +1023,13 @@ const ImeardlePlayer = () => {
 						/>
 					</Modal>
 				</div>
+				<a
+					href="https://github.com/Rensvdk20"
+					rel="noreferrer"
+					target="_blank"
+				>
+					<BsGithub size={20} id="github" />
+				</a>
 			</div>
 		</div>
 	);
