@@ -1,4 +1,4 @@
-@import '../../global';
+@import '../../shared/styles/global';
 
 #root {
     display: flex;
@@ -38,7 +38,7 @@
                 }
     
                 &::before {
-                    content: attr(data-currentTime);
+                    content: attr(data-currenttime);
                     position: absolute;
                     left: -40px;
                 }

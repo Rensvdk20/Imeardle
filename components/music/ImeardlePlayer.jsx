@@ -1,7 +1,10 @@
-import React from "react";
+"use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 
-import ReactPlayer from "react-player";
+import dynamic from "next/dynamic";
+//Prevents hydration error with the react-player package
+const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
+
 import ReactCanvasConfetti from "react-canvas-confetti";
 
 import "./ImeardlePlayer.scss";
@@ -647,6 +650,12 @@ const ImeardlePlayer = () => {
 	useEffect(() => {
 		randomizeSong(false);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
+
+		document.addEventListener("keydown", function (e) {
+			if (e.keyCode === "179") {
+				e.preventDefault();
+			}
+		});
 	}, []);
 
 	// Randomize a song from the given songs array
@@ -680,12 +689,6 @@ const ImeardlePlayer = () => {
 		let lowerCaseInput = e.target.value.toLowerCase();
 		setUserInput(lowerCaseInput);
 	};
-
-	document.addEventListener("keydown", function (e) {
-		if (e.keyCode === "179") {
-			e.preventDefault();
-		}
-	});
 
 	const filteredSongs = songs
 		.filter((song) => {
@@ -900,7 +903,7 @@ const ImeardlePlayer = () => {
 						<div className="col-12 col-progress-bar">
 							<div
 								className="progress-bar"
-								data-currentTime={
+								data-currenttime={
 									playedInSeconds.toFixed(0) < 10
 										? "0:0" + playedInSeconds.toFixed(0)
 										: "0:" + playedInSeconds.toFixed(0)
