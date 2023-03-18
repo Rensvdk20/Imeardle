@@ -1,21 +1,22 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
-
 import dynamic from "next/dynamic";
-//Prevents hydration error with the react-player package
-const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 
-import ReactCanvasConfetti from "react-canvas-confetti";
-
-import "./ImeardlePlayer.scss";
 import {
 	BsPlayCircle,
 	BsPauseCircle,
 	BsMusicNoteBeamed,
 	BsGithub,
 } from "react-icons/bs";
+
+import ReactCanvasConfetti from "react-canvas-confetti";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+
+import "./ImeardlePlayer.scss";
+
+//Prevents hydration error with the react-player
+const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 
 const songs = [
 	{
