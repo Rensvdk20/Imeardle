@@ -1,6 +1,6 @@
 "use client";
+
 import { useState, useEffect, useRef, useCallback } from "react";
-import dynamic from "next/dynamic";
 
 import {
 	BsPlayCircle,
@@ -15,8 +15,10 @@ import Modal from "react-bootstrap/Modal";
 
 import "./ImeardlePlayer.scss";
 
-//Prevents hydration error with the react-player
-const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
+import dynamic from "next/dynamic";
+const Player = dynamic(() => import("../../components/music/Player"), {
+	ssr: false,
+});
 
 const songs = [
 	{
@@ -603,8 +605,7 @@ const songs = [
 
 const state = {
 	playing: false,
-	volume: 0.05,
-	duration: 0,
+	volume: 1,
 	playedInSeconds: 0,
 	played: 0,
 };
@@ -620,7 +621,7 @@ const canvasStyles = {
 
 const ImeardlePlayer = () => {
 	// ##### Imeardle player #####
-	const player = useRef(null);
+	const playerRef = useRef(null);
 	const [playerState, setPlayerState] = useState(state);
 	const { playing, volume, playedInSeconds } = playerState;
 
@@ -784,12 +785,6 @@ const ImeardlePlayer = () => {
 	};
 
 	// ##### Player handlers #####
-
-	const handleDuration = (duration) => {
-		console.log("onDuration", duration);
-		setPlayerState({ ...playerState, duration });
-	};
-
 	const handleProgress = (e) => {
 		setPlayerState({
 			...playerState,
@@ -830,7 +825,7 @@ const ImeardlePlayer = () => {
 			played: 0,
 		});
 
-		player?.current?.seekTo(0);
+		playerRef?.current?.seekTo(0);
 	};
 
 	// Game functions
@@ -993,14 +988,13 @@ const ImeardlePlayer = () => {
 						</div>
 					</div>
 
-					<ReactPlayer
+					<Player
 						id="player"
-						ref={player}
+						playerRef={playerRef}
 						playing={playing}
-						url={currentSong.url}
+						currentSongUrl={currentSong.url}
 						volume={volume}
-						onProgress={handleProgress}
-						onDuration={(e) => handleDuration(e)}
+						handleProgress={handleProgress}
 					/>
 
 					<Modal show={show} onHide={closeModal} centered>
