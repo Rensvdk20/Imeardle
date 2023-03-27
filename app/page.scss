@@ -1,0 +1,11 @@
+body {
+    .playerContainer {
+        display: flex;
+        align-items: center;
+        height: calc(100vh - 59.2px);
+
+        .player {
+            margin-bottom: 80px;
+        }
+    }
+}

@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 
-import "bootstrap/dist/css/bootstrap.min.css";
 import ImeardlePlayer from "../components/music/ImeardlePlayer";
-import "../shared/styles/global.scss";
+
+import "./page.scss";
 
 export const metadata = {
 	title: "Imeardle - Guess the song",
@@ -10,9 +10,9 @@ export const metadata = {
 
 function App() {
 	return (
-		<Fragment>
+		<div class="playerContainer">
 			<ImeardlePlayer />
-		</Fragment>
+		</div>
 	);
 }
 
