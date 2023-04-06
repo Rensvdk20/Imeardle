@@ -648,10 +648,9 @@ const ImeardlePlayer = () => {
 	// Selected dropdownbox
 	const [dropDownIndex, setDropDownIndex] = useState(0);
 
-	// Randomize a song at application start
 	useEffect(() => {
+		// Randomize a song at the start
 		randomizeSong(false);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 
 		document.addEventListener("keydown", function (e) {
 			if (e.keyCode === "179") {
@@ -760,28 +759,32 @@ const ImeardlePlayer = () => {
 	};
 
 	const handleDropdownArrowKeys = (e) => {
+		console.log(dropDownIndex);
+
 		if (e.keyCode === 13) {
-			handleGuess(filteredSongs[dropDownIndex].answer);
+			return handleGuess(filteredSongs[dropDownIndex].answer);
 		}
 
-		if (dropDownIndex >= 4) {
-			return setDropDownIndex(0);
+		if (e.keyCode === 38) {
+			if (dropDownIndex > 0) {
+				return setDropDownIndex(dropDownIndex - 1);
+			}
+
+			return setDropDownIndex(filteredSongs.length - 1);
 		}
 
 		if (e.keyCode === 40) {
-			setDropDownIndex(dropDownIndex + 1);
+			if (dropDownIndex < filteredSongs.length - 1) {
+				return setDropDownIndex(dropDownIndex + 1);
+			}
+
+			return setDropDownIndex(0);
 		}
 
-		// if (e.keyCode === 38) {
-		// 	setDropDownIndex(dropDownIndex - 1);
-		// }
-
-		// if (dropDownIndex < 0) {
-		// 	console.log("Reset to 4");
-		// 	return setDropDownIndex(filteredSongs.length - 1);
-		// }
-
-		console.log(guessState);
+		if (e.key === "Tab") {
+			e.preventDefault();
+			return setUserInput(filteredSongs[dropDownIndex].answer);
+		}
 	};
 
 	// ##### Player handlers #####
