@@ -155,6 +155,11 @@
 	position: fixed;
 	bottom: 10px;
 	left: 15px;
+
+    &:hover {
+        transition: 200ms ease-in-out;
+        color: darken($white, 25);
+    }
 }
 
 @media #{$sm} {
