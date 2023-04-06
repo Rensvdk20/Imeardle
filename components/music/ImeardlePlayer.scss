@@ -1,191 +1,191 @@
-@import '../../shared/styles/global';
+@import "../../shared/styles/global";
 
 #root {
-    display: flex;
-    justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 
 .player {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+	display: flex;
+	justify-content: center;
+	width: 100%;
 
-    .player-container {
-        margin-top: 40px;
-        position: relative;
+	.player-container {
+		margin-top: 40px;
+		position: relative;
 
-        .col-progress-bar {
-            .progress-bar {
-                border-radius: 10px;
-                border: 1px solid black;
-    
-                &-container {
-                    height: 20px;
-                    background-color: $secondary;
-                    transition: width 0.2s linear;
-    
-                    &.playing {
-                        transition: width 1s linear;
-                    }
-                }
-    
-                &-line {
-                    position: absolute;
-                    height: 20px;
-                    border-right: 1px solid black;
-                }
-    
-                &::before {
-                    content: attr(data-currenttime);
-                    position: absolute;
-                    left: -40px;
-                }
-    
-                &::after {
-                    content: "0:30";
-                    position: absolute;
-                    right: -40px;
-                }
-            }
-        }
+		.col-progress-bar {
+			.progress-bar {
+				border-radius: 10px;
+				border: 1px solid black;
 
-        .col-controls {
-            display: flex;
-            justify-content: center;
+				&-container {
+					height: 20px;
+					background-color: $secondary;
+					transition: width 0.2s linear;
 
-            .btn-randomize {
-                position: absolute;
-                right: 0;
-                
-                > svg {
-                    fill: $secondary;
-                }
+					&.playing {
+						transition: width 1s linear;
+					}
+				}
 
-                &:hover {
-                    > svg {
-                        animation: fill 1s ease-in-out;
-                        fill: darken($secondary, 20%);
-                    }
-                }
-            }
-        }
+				&-line {
+					position: absolute;
+					height: 20px;
+					border-right: 1px solid black;
+				}
 
-        .col-search-box {
-            margin-top: 40px;
+				&::before {
+					content: attr(data-currenttime);
+					position: absolute;
+					left: -40px;
+				}
 
-            .search-box {
-                position: relative;
-    
-                >input {
-                    width: 100%;
-                    padding: 7.5px;
-                    color: $white;
-                    border: 1px solid gray;
-                    background-color: darken($primary, 1);
-                    outline: none;
+				&::after {
+					content: "0:30";
+					position: absolute;
+					right: -40px;
+				}
+			}
+		}
 
-                    &:disabled {
-                        cursor: not-allowed;
-                    }
-                }
-    
-                ul {
-                    position: absolute;
-                    border: 1px solid $gray;
-                    width: 100%;
-                    max-height: 180px;
-                    margin: 0;
-                    padding: 0;
-                    overflow: hidden;
-    
-                    >li {
-                        border-bottom: 2px solid $gray;
-                        background-color: $primary;
-                        border-top: 0;
-                        padding: 5px;
-    
-                        &:last-child {
-                            border-bottom: 0;
-                        }
-    
-                        &.active {
-                            cursor: pointer;
-                            background-color: lighten(grey, 20%);
-                        }
-    
-                        &:hover {
-                            cursor: pointer;
-                            background-color: grey;
-                        }
-                    }
-    
-                    &.hide {
-                        display: none;
-                    }
-                }
-            }
-        }
-    }
+		.col-controls {
+			display: flex;
+			justify-content: center;
+
+			.btn-randomize {
+				position: absolute;
+				right: 0;
+
+				> svg {
+					fill: $secondary;
+				}
+
+				&:hover {
+					> svg {
+						animation: fill 1s ease-in-out;
+						fill: darken($secondary, 20%);
+					}
+				}
+			}
+		}
+
+		.col-search-box {
+			margin-top: 40px;
+
+			.search-box {
+				position: relative;
+
+				> input {
+					width: 100%;
+					padding: 7.5px;
+					color: $white;
+					border: 1px solid gray;
+					background-color: darken($primary, 1);
+					outline: none;
+
+					&:disabled {
+						cursor: not-allowed;
+					}
+				}
+
+				ul {
+					position: absolute;
+					border: 1px solid $gray;
+					width: 100%;
+					max-height: 180px;
+					margin: 0;
+					padding: 0;
+					overflow: hidden;
+
+					> li {
+						border-bottom: 2px solid $gray;
+						background-color: $primary;
+						border-top: 0;
+						padding: 5px;
+
+						&:last-child {
+							border-bottom: 0;
+						}
+
+						&.active {
+							cursor: pointer;
+							background-color: lighten(grey, 20%);
+						}
+
+						&:hover {
+							cursor: pointer;
+							background-color: grey;
+						}
+					}
+
+					&.hide {
+						display: none;
+					}
+				}
+			}
+		}
+	}
 }
 
 .modal {
-    &-body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+	&-body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 
-        img {
-            width: 70%;
-            border-radius: 5px;
-        }
+		img {
+			width: 70%;
+			border-radius: 5px;
+		}
 
-        h1 {
-            margin-top: 20px;
-            text-align: center;
-        }
-    }
+		h1 {
+			margin-top: 20px;
+			text-align: center;
+		}
+	}
 
-    &-footer {
-        justify-content: center !important;
-    }
+	&-footer {
+		justify-content: center !important;
+	}
 }
 
 #github {
-    color: $white;
-    position: fixed;
-    bottom: 10px;
-    left: 15px;
+	color: $white;
+	position: fixed;
+	bottom: 10px;
+	left: 15px;
 }
 
 @media #{$sm} {
-    .player {
-        height: 60vh;
+	.player {
+		height: 60vh;
 
-        .player-container {
-            .col-controls {
-                @media #{$sm} {
-                    margin-top: 40px;
-                }
-            }
+		.player-container {
+			.col-controls {
+				@media #{$sm} {
+					margin-top: 40px;
+				}
+			}
 
-            .col-progress-bar {
-                .progress-bar {
-                    &::before {
-                        left: 0px;
-                        top: 22px;
-                    }
+			.col-progress-bar {
+				.progress-bar {
+					&::before {
+						left: 0px;
+						top: 22px;
+					}
 
-                    &::after {
-                        right: 0;
-                        top: 22px;
-                    }
-                }
+					&::after {
+						right: 0;
+						top: 22px;
+					}
+				}
 
-                .guesses-left {
-                    position: absolute;
-                    top: -23px;
-                }
-            }
-        }
-    }
+				.guesses-left {
+					position: absolute;
+					top: -23px;
+				}
+			}
+		}
+	}
 }
