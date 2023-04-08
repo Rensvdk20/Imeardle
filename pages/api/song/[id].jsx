@@ -1,4 +1,4 @@
-import prisma from "./../../../prisma/client";
+import prisma from "../../../prisma/client";
 
 export default async function handler(req, res) {
 	const { method } = req;
@@ -8,23 +8,20 @@ export default async function handler(req, res) {
 		case "GET":
 			try {
 				const { id } = req.query;
-				const playlist = await prisma.playlist.findUnique({
+				const song = await prisma.song.findUnique({
 					where: {
 						id,
 					},
-					include: {
-						Song: true,
-					},
 				});
 
-				if (playlist === null) {
+				if (song === null) {
 					res.status(404).json({
 						code: 404,
-						message: "Playlist not found",
+						message: "Song not found",
 					});
 				}
 
-				res.status(200).json(playlist);
+				res.status(200).json(song);
 			} catch (error) {
 				res.status(500).json({
 					code: 500,
@@ -33,36 +30,38 @@ export default async function handler(req, res) {
 			}
 			break;
 
-		//Edit playlist
+		//Edit song
 		case "PUT":
 			try {
 				const { id } = req.query;
-				const { name, coverUrl } = req.body;
-				const playlist = await prisma.playlist.update({
+				const { title, songUrl, coverUrl, playlistId } = req.body;
+				const song = await prisma.song.update({
 					where: {
 						id,
 					},
 					data: {
-						name,
+						title,
+						songUrl,
 						coverUrl,
+						playlistId,
 					},
 				});
-				res.status(200).json(playlist);
+				res.status(200).json(song);
 			} catch (error) {
 				res.status(500).json({ error: error.message });
 			}
 			break;
 
-		//Delete playlist
+		//Delete song
 		case "DELETE":
 			try {
 				const { id } = req.query;
-				const playlist = await prisma.playlist.delete({
+				const song = await prisma.song.delete({
 					where: {
 						id,
 					},
 				});
-				res.status(200).json(playlist);
+				res.status(200).json(song);
 			} catch (error) {
 				res.status(500).json({ error: error.message });
 			}

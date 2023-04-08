@@ -1,4 +1,4 @@
-import prisma from "./../../../prisma/client";
+import prisma from "../../../prisma/client";
 
 export default async function handler(req, res) {
 	const { method } = req;
@@ -7,29 +7,27 @@ export default async function handler(req, res) {
 		// Get all
 		case "GET":
 			try {
-				const playlist = await prisma.playlist.findMany({
-					include: {
-						Songs: true,
-					},
-				});
+				const song = await prisma.song.findMany();
 
-				res.status(200).json(playlist);
+				res.status(200).json(song);
 			} catch (error) {
 				res.status(500).json({ error: error.message });
 			}
 			break;
 
-		// Add new playlist
+		// Add new song
 		case "POST":
 			try {
-				const { name, coverUrl } = req.body;
-				const playlist = await prisma.playlist.create({
+				const { title, songUrl, coverUrl, playlistId } = req.body;
+				const song = await prisma.song.create({
 					data: {
-						name,
+						title,
+						songUrl,
 						coverUrl,
+						playlistId,
 					},
 				});
-				res.status(201).json(playlist);
+				res.status(201).json(song);
 			} catch (error) {
 				res.status(500).json({ error: error.message });
 			}
