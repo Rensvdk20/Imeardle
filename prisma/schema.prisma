@@ -19,12 +19,12 @@ model Playlist {
 }
 
 model Song {
-    id            String   @id @default(cuid())
-    title         String
-    songUrl       String
-    coverImageUrl String
-    playlist      Playlist @relation(fields: [playlistId], references: [id])
-    playlistId    String
+    id         String   @id @default(cuid())
+    title      String
+    songUrl    String
+    coverUrl   String
+    playlist   Playlist @relation(fields: [playlistId], references: [id])
+    playlistId String
 
     @@index([playlistId])
 }
