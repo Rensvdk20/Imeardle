@@ -10,7 +10,7 @@ export const metadata = {
 
 function App() {
 	return (
-		<div class="playerContainer">
+		<div className="playerContainer">
 			<ImeardlePlayer />
 		</div>
 	);
