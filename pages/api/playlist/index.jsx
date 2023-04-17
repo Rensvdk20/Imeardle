@@ -7,11 +7,7 @@ export default async function handler(req, res) {
 		// Get all
 		case "GET":
 			try {
-				const playlist = await prisma.playlist.findMany({
-					include: {
-						Songs: true,
-					},
-				});
+				const playlist = await prisma.playlist.findMany();
 
 				res.status(200).json(playlist);
 			} catch (error) {

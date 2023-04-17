@@ -12,6 +12,9 @@ export default async function handler(req, res) {
 					where: {
 						id,
 					},
+					include: {
+						Songs: true,
+					},
 				});
 
 				if (playlist === null) {
