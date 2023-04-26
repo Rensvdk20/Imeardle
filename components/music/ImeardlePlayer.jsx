@@ -7,6 +7,7 @@ import {
 	BsPauseCircle,
 	BsMusicNoteBeamed,
 	BsGithub,
+	BsFillSkipForwardFill,
 } from "react-icons/bs";
 
 import ReactCanvasConfetti from "react-canvas-confetti";
@@ -150,26 +151,7 @@ const ImeardlePlayer = () => {
 	const handleGuess = (song) => {
 		console.log(guessStates.indexOf(guessState) === guessStates.length - 1);
 		if (song === currentSong.title) {
-			setModalMessageState("Congrats!");
-			// Correct answer
-			// View the song
-			openModal();
-
-			setGuessedState(true);
-
-			// Empty user input & Set select dropdown item to 0
-			setUserInput("");
-			setDropDownIndex(0);
-
-			// Put the song at the beginning
-			handleStartFromBeginning();
-
-			//Make the song fully play
-			// setGuessState(guessStates[guessStates.length - 1]);
-			setGuessState(29);
-
-			// Play the song
-			handlePlay();
+			handleCorrectGuess();
 		} else {
 			// Incorrect answer
 
@@ -178,14 +160,42 @@ const ImeardlePlayer = () => {
 				return;
 			}
 
-			setUserInput("");
-			if (guessState < 20) {
-				increaseGuessState();
-			} else {
-				setModalMessageState("Unlucky, try again!");
-				// No more guesses left
-				openModal();
-			}
+			handleIncorrectGuess();
+		}
+	};
+
+	const handleCorrectGuess = () => {
+		setModalMessageState("Congrats!");
+
+		// Correct answer
+		// View the song
+		openModal();
+
+		setGuessedState(true);
+
+		// Empty user input & Set select dropdown item to 0
+		setUserInput("");
+		setDropDownIndex(0);
+
+		// Put the song at the beginning
+		handleStartFromBeginning();
+
+		//Make the song fully play
+		// setGuessState(guessStates[guessStates.length - 1]);
+		setGuessState(29);
+
+		// Play the song
+		handlePlay();
+	};
+
+	const handleIncorrectGuess = () => {
+		setUserInput("");
+		if (guessState < 20) {
+			increaseGuessState();
+		} else {
+			setModalMessageState("Unlucky, try again!");
+			// No more guesses left
+			openModal();
 		}
 	};
 
@@ -406,6 +416,12 @@ const ImeardlePlayer = () => {
 						</div>
 						<div className="col-12 col-search-box">
 							<div className="search-box">
+								<button
+									className="btn btn-skip"
+									onClick={handleIncorrectGuess}
+								>
+									<BsFillSkipForwardFill />
+								</button>
 								<input
 									type="text"
 									value={userInput}

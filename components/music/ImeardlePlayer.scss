@@ -123,6 +123,13 @@
 						display: none;
 					}
 				}
+
+                .btn-skip {
+                    position: absolute;
+                    right: 8px;
+                    scale: 1.2;
+                    align-self: center;
+                }
 			}
 		}
 	}
