@@ -33,6 +33,10 @@ body {
     text-align: center;
     width: fit-content;
     transition: all ease-in-out 1s;
+
+    &:disabled {
+        opacity: 1;
+    }
 }
 
 // Bootstrap

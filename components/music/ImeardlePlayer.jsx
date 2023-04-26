@@ -27,6 +27,7 @@ const state = {
 	volume: 1,
 	playedInSeconds: 0,
 	played: 0,
+	loaded: false,
 };
 
 const canvasStyles = {
@@ -41,6 +42,7 @@ const canvasStyles = {
 const ImeardlePlayer = () => {
 	// ##### Imeardle player #####
 	const playerRef = useRef(null);
+	// const [songs, setSongs] = useState([]);
 	const [playerState, setPlayerState] = useState(state);
 	const { playing, volume, playedInSeconds } = playerState;
 
@@ -67,34 +69,9 @@ const ImeardlePlayer = () => {
 	// Selected dropdownbox
 	const [dropDownIndex, setDropDownIndex] = useState(0);
 
-	const getAllSongs = async () => {
-		const res = await fetch(
-			"http://localhost:3000/api/playlist/clg8fn9ez0002vels65dz3l8k"
-		);
-		const data = await res.json();
-
-		let result = {
-			result: data,
-			status: res.status,
-		};
-
-		console.log(result);
-		return result;
-	};
-
-	useEffect(async () => {
+	useEffect(() => {
 		//Get all songs
-		const result = await getAllSongs();
-		songs = result.result.Songs;
-
-		// Randomize a song at the start
-		randomizeSong(songs);
-
-		//Pause the player after the first song has been loaded
-		setPlayerState({
-			...state,
-			playing: false,
-		});
+		loadAllSongs();
 
 		document.addEventListener("keydown", function (e) {
 			if (e.keyCode === "179") {
@@ -102,6 +79,27 @@ const ImeardlePlayer = () => {
 			}
 		});
 	}, []);
+
+	//Load all the songs async from the database
+	const loadAllSongs = async () => {
+		const res = await fetch(
+			"http://localhost:3000/api/playlist/clg8fn9ez0002vels65dz3l8k"
+		);
+		const data = await res.json();
+
+		console.log(data.Songs);
+		songs = data.Songs;
+
+		// Randomize a song at the start
+		randomizeSong();
+
+		//Pause the player after the first song has been loaded
+		setPlayerState({
+			...state,
+			playing: false,
+			loaded: true,
+		});
+	};
 
 	// Randomize a song from the given songs array
 	const randomizeSong = (play = true) => {
@@ -203,7 +201,9 @@ const ImeardlePlayer = () => {
 	};
 
 	const handleDropdownArrowKeys = (e) => {
-		console.log(dropDownIndex);
+		console.log(filteredSongs[dropDownIndex]);
+
+		if (filteredSongs.length === 0) return;
 
 		if (e.keyCode === 13) {
 			return handleGuess(filteredSongs[dropDownIndex].title);
@@ -382,11 +382,18 @@ const ImeardlePlayer = () => {
 							<button
 								className="btn btn-controls btn-play-pause"
 								onClick={handlePlayPause}
+								disabled={!playerState.loaded}
 							>
 								{playerState.playing ? (
 									<BsPauseCircle size={40} />
-								) : (
+								) : playerState.loaded ? (
 									<BsPlayCircle size={40} />
+								) : (
+									<img
+										className="loader"
+										src="img/loader.svg"
+										width={40}
+									/>
 								)}
 							</button>
 							<button
@@ -439,15 +446,18 @@ const ImeardlePlayer = () => {
 						id="player"
 						playerRef={playerRef}
 						playing={playing}
-						currentSongUrl={currentSong.songUrl}
+						currentSongUrl={currentSong ? currentSong.songUrl : ""}
 						volume={volume}
 						handleProgress={handleProgress}
 					/>
 
 					<Modal show={show} onHide={closeModal} centered>
 						<Modal.Body>
-							<img src={currentSong.coverUrl} alt="album cover" />
-							<h1>{currentSong.title}</h1>
+							<img
+								src={currentSong ? currentSong.coverUrl : ""}
+								alt="album cover"
+							/>
+							<h1>{currentSong ? currentSong.title : ""}</h1>
 							<h2>{modalMessageState}</h2>
 						</Modal.Body>
 						<Modal.Footer>
