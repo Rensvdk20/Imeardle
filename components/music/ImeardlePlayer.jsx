@@ -63,6 +63,7 @@ const ImeardlePlayer = () => {
 	// Guess states
 	const guessStates = [2, 4, 8, 13, 20];
 	const [guessState, setGuessState] = useState(guessStates[0]);
+	const [guessesLeft, setGuessesLeft] = useState(guessStates.length);
 
 	// User input
 	const [userInput, setUserInput] = useState("");
@@ -112,6 +113,7 @@ const ImeardlePlayer = () => {
 
 		// Reset guess state
 		setGuessState(guessStates[0]);
+		setGuessesLeft(guessStates.length);
 
 		//Set guessed to false
 		setGuessedState(false);
@@ -149,12 +151,9 @@ const ImeardlePlayer = () => {
 	};
 
 	const handleGuess = (song) => {
-		console.log(guessStates.indexOf(guessState) === guessStates.length - 1);
 		if (song === currentSong.title) {
 			handleCorrectGuess();
 		} else {
-			// Incorrect answer
-
 			// Check if input is empty
 			if (userInput === "") {
 				return;
@@ -165,9 +164,9 @@ const ImeardlePlayer = () => {
 	};
 
 	const handleCorrectGuess = () => {
+		// Correct answer
 		setModalMessageState("Congrats!");
 
-		// Correct answer
 		// View the song
 		openModal();
 
@@ -190,11 +189,14 @@ const ImeardlePlayer = () => {
 
 	const handleIncorrectGuess = () => {
 		setUserInput("");
+		setGuessesLeft(
+			guessStates.length - guessStates.indexOf(guessState) - 1
+		);
 		if (guessState < 20) {
 			increaseGuessState();
 		} else {
-			setModalMessageState("Unlucky, try again!");
 			// No more guesses left
+			setModalMessageState("Unlucky, try again!");
 			openModal();
 		}
 	};
@@ -211,8 +213,6 @@ const ImeardlePlayer = () => {
 	};
 
 	const handleDropdownArrowKeys = (e) => {
-		console.log(filteredSongs[dropDownIndex]);
-
 		if (filteredSongs.length === 0) return;
 
 		if (e.keyCode === 13) {
@@ -383,9 +383,7 @@ const ImeardlePlayer = () => {
 							</div>
 
 							<p className="guesses-left">
-								Guesses left:{" "}
-								{guessStates.length -
-									guessStates.indexOf(guessState)}
+								Guesses left: {guessesLeft}
 							</p>
 						</div>
 						<div className="col-12 col-controls">
