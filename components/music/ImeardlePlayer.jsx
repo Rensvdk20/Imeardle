@@ -85,7 +85,10 @@ const ImeardlePlayer = () => {
 	//Load all the songs async from the database
 	const loadAllSongs = async () => {
 		const res = await fetch(
-			"http://localhost:3000/api/playlist/clg8fn9ez0002vels65dz3l8k"
+			"http://localhost:3000/api/playlist/clg8fn9ez0002vels65dz3l8k",
+			{
+				next: { revalidate: 10 },
+			}
 		);
 		const data = await res.json();
 
@@ -373,6 +376,7 @@ const ImeardlePlayer = () => {
 								>
 									{guessStates.map((guessState, index) => (
 										<div
+											key={index}
 											className="progress-bar-line"
 											style={{
 												width: guessState * 1.05 + "vw",
@@ -439,7 +443,7 @@ const ImeardlePlayer = () => {
 								>
 									{filteredSongs.map((song, index) => (
 										<li
-											key={index}
+											key={song.id}
 											data-title={song.title}
 											onClick={handleGuessOnClick}
 											className={
