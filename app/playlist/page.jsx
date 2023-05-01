@@ -1,11 +1,18 @@
-import { Fragment } from "react";
+import PlaylistOverview from "../../components/playlist/overview/PlaylistOverview";
+import "../../components/playlist/overview/PlaylistOverview.scss";
 
-function PlaylistPage() {
+export const metadata = {
+	title: "Imeardle - Playlists",
+};
+
+function PlaylistOverviewPage() {
 	return (
-		<Fragment>
-			<h1>Playlists</h1>
-		</Fragment>
+		<div className="container">
+			<div className="row">
+				<PlaylistOverview />
+			</div>
+		</div>
 	);
 }
 
-export default PlaylistPage;
+export default PlaylistOverviewPage;
