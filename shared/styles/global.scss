@@ -10,9 +10,26 @@ $md: "only screen and (max-width : 768px)";
 $sm: "only screen and (max-width : 576px)";
 $xs: "only screen and (max-width : 0px)";
 
+@font-face {
+    font-family: 'Typold Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Typold Regular'), url('../../public/fonts/Typold_Regular.woff') format('woff');
+}
+
 body {
     color: $white;
     background-color: $primary;
+    font-family: 'Typold Regular';
+}
+
+a {
+    color: $white;
+    text-decoration: none;
+
+    &:hover {
+        color: $white;
+    }
 }
 
 #player {
