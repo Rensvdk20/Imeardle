@@ -1,0 +1,39 @@
+@import '../../../shared/styles/global';
+
+.playlistDetail {
+    .playlist {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        margin-bottom: 45px;
+    
+        h1 {
+            margin-top: 20px;
+        }
+    
+        img {
+            width: 400px;
+            border-radius: 50%;
+        }
+
+        @media #{$sm} {
+            img {
+                width: 100%;
+            }
+        }
+    }
+    
+    .songs {
+        h2 {
+            margin-bottom: 15px;
+        }
+    
+        .song {
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 5px rgb(0 0 0 / 20%);
+            background-color: lighten($primary, .5);
+            border-radius: 5px;
+        }
+    }
+}

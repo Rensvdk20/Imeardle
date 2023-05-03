@@ -14,7 +14,7 @@ import ReactCanvasConfetti from "react-canvas-confetti";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-import "./ImeardlePlayer.scss";
+import "./imeardlePlayer.scss";
 
 import dynamic from "next/dynamic";
 const Player = dynamic(() => import("../../components/music/Player"), {
@@ -84,12 +84,9 @@ const ImeardlePlayer = () => {
 
 	//Load all the songs async from the database
 	const loadAllSongs = async () => {
-		const res = await fetch(
-			"http://localhost:3000/api/playlist/clg8fn9ez0002vels65dz3l8k",
-			{
-				next: { revalidate: 10 },
-			}
-		);
+		const res = await fetch("/api/playlist/clg8fn9ez0002vels65dz3l8k", {
+			next: { revalidate: 10 },
+		});
 		const data = await res.json();
 
 		console.log(data.Songs);
@@ -411,7 +408,10 @@ const ImeardlePlayer = () => {
 							<button
 								className="btn btn-controls btn-randomize"
 								onClick={randomizeSong}
-								disabled={randomizeButtonCooldown}
+								disabled={
+									randomizeButtonCooldown ||
+									!playerState.loaded
+								}
 							>
 								<BsMusicNoteBeamed size={40} />
 							</button>
