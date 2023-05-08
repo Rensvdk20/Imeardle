@@ -1,16 +1,17 @@
 @import "../../shared/styles/global";
 
-#root {
-	display: flex;
-	justify-content: center;
-}
-
 .player {
 	display: flex;
 	justify-content: center;
 	width: 100%;
 
-	.player-container {
+    &-playing-text {
+        position: absolute;
+        top: 20px;
+        width: fit-content;
+    }
+
+	&-container {
 		margin-top: 40px;
 		position: relative;
 
@@ -53,7 +54,12 @@
 			display: flex;
 			justify-content: center;
 
+            .btn-controls {
+                cursor: pointer;
+            }
+
 			.btn-randomize {
+                cursor: pointer;
 				position: absolute;
 				right: 0;
 
@@ -125,10 +131,17 @@
 				}
 
                 .btn-skip {
+                    cursor: pointer;
+                    display: flex;
                     position: absolute;
-                    right: 8px;
-                    scale: 1.2;
+                    height: 100%;
                     align-self: center;
+                    right: 15px;
+                    scale: 1.2;
+
+                    > svg {
+                        align-self: center;
+                    }
                 }
 			}
 		}

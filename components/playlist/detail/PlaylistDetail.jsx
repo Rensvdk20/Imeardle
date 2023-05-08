@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 function PlaylistDetail({ params }) {
+	const { push } = useRouter();
 	const [playlist, setData] = useState({});
 
 	useEffect(() => {
@@ -15,8 +17,18 @@ function PlaylistDetail({ params }) {
 		});
 	}, []);
 
+	const selectPlaylist = () => {
+		push("/?playlistId=" + params.id);
+	};
+
 	return (
 		<div className="playlistDetail">
+			<button
+				className="btn playlistDetail-select"
+				onClick={selectPlaylist}
+			>
+				Use this playlist
+			</button>
 			<div className="playlist">
 				<img src={playlist.coverUrl} alt={playlist.name} />
 				<h1>{playlist.name}</h1>

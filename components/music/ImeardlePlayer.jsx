@@ -40,18 +40,16 @@ const canvasStyles = {
 	left: 0,
 };
 
-const ImeardlePlayer = () => {
+const ImeardlePlayer = (params) => {
 	// ##### Imeardle player #####
 	const playerRef = useRef(null);
-	// const [songs, setSongs] = useState([]);
+
 	const [playerState, setPlayerState] = useState(state);
 	const { playing, volume, playedInSeconds } = playerState;
 
 	const [modalMessageState, setModalMessageState] = useState("");
 	const [randomizeButtonCooldown, setRandomizeButtonCooldown] =
 		useState(false);
-
-	const [guessed, setGuessedState] = useState(false);
 
 	// Current song
 	const [currentSong, setCurrentSong] = useState({
@@ -60,10 +58,13 @@ const ImeardlePlayer = () => {
 		coverUrl: "",
 	});
 
+	const [currentPlaylist, setCurrentPlaylist] = useState("...");
+
 	// Guess states
 	const guessStates = [2, 4, 8, 13, 20];
 	const [guessState, setGuessState] = useState(guessStates[0]);
 	const [guessesLeft, setGuessesLeft] = useState(guessStates.length);
+	const [guessed, setGuessedState] = useState(false);
 
 	// User input
 	const [userInput, setUserInput] = useState("");
@@ -84,13 +85,40 @@ const ImeardlePlayer = () => {
 
 	//Load all the songs async from the database
 	const loadAllSongs = async () => {
-		const res = await fetch("/api/playlist/clg8fn9ez0002vels65dz3l8k", {
-			next: { revalidate: 10 },
-		});
-		const data = await res.json();
+		let res;
+		let playlist;
+		console.log(params.playlistId);
+		if (params.playlistId == null) {
+			//No playlist selected
+			res = await fetch("/api/playlist/random", {
+				next: { revalidate: 10 },
+			});
 
-		console.log(data.Songs);
-		songs = data.Songs;
+			playlist = await res.json();
+			setCurrentPlaylist("Random");
+		} else {
+			//Playlist selected
+			res = await fetch("/api/playlist/" + params.playlistId, {
+				next: { revalidate: 10 },
+			});
+
+			if (res.status != 404) {
+				playlist = await res.json();
+				setCurrentPlaylist(playlist.name);
+			} else {
+				//Playlist not found
+				res = await fetch("/api/playlist/random", {
+					next: { revalidate: 10 },
+				});
+
+				playlist = await res.json();
+				setCurrentPlaylist("Not found, playing random");
+			}
+		}
+
+		console.log(playlist);
+
+		songs = playlist.Songs;
 
 		// Randomize a song at the start
 		randomizeSong();
@@ -350,6 +378,8 @@ const ImeardlePlayer = () => {
 
 	return (
 		<div className="row player">
+			<h5 className="player-playing-text">Playlist: {currentPlaylist}</h5>
+
 			<div className="col-12 col-sm-8 col-pps col-md-8 col-lg-6 col-xl-6 col-xxl-4">
 				<div className="player-container">
 					<div className="row">
@@ -388,8 +418,8 @@ const ImeardlePlayer = () => {
 							</p>
 						</div>
 						<div className="col-12 col-controls">
-							<button
-								className="btn btn-controls btn-play-pause"
+							<div
+								className="btn-controls btn-play-pause"
 								onClick={handlePlayPause}
 								disabled={!playerState.loaded}
 							>
@@ -404,9 +434,9 @@ const ImeardlePlayer = () => {
 										width={40}
 									/>
 								)}
-							</button>
-							<button
-								className="btn btn-controls btn-randomize"
+							</div>
+							<div
+								className="btn-controls btn-randomize"
 								onClick={randomizeSong}
 								disabled={
 									randomizeButtonCooldown ||
@@ -414,16 +444,16 @@ const ImeardlePlayer = () => {
 								}
 							>
 								<BsMusicNoteBeamed size={40} />
-							</button>
+							</div>
 						</div>
 						<div className="col-12 col-search-box">
 							<div className="search-box">
-								<button
-									className="btn btn-skip"
+								<div
+									className="btn-skip"
 									onClick={handleIncorrectGuess}
 								>
 									<BsFillSkipForwardFill />
-								</button>
+								</div>
 								<input
 									type="text"
 									value={userInput}

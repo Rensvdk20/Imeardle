@@ -1,6 +1,19 @@
 @import '../../../shared/styles/global';
 
 .playlistDetail {
+    .btn {
+        border: 1px solid $white;
+
+        &:hover {
+            border: 1px solid darken($white, 30);
+            color: darken($white, 30);
+        }
+    }
+
+    &-select {
+        position: absolute;
+    }
+
     .playlist {
         display: flex;
         align-items: center;

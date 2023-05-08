@@ -30,53 +30,55 @@ function Playlist() {
 	};
 
 	return (
-		<div className="playlist">
-			<div className="playlist-search">
-				<BsSearch onClick={showSearch} />
-				<input
-					ref={searchInputRef}
-					onChange={(e) => setSearchInput(e.target.value)}
-					type="text"
-					placeholder="Search"
-					className={hideSearch ? "hide" : "show"}
-				/>
-			</div>
-			<h2>Playlists</h2>
-			<div className="playlist-list">
-				<div className="row">
-					{playlists
-						.filter((playlist) => {
-							if (searchInput === "") {
-								return playlist;
-							} else if (
-								playlist.name
-									.toLowerCase()
-									.includes(searchInput.toLowerCase())
-							) {
-								return playlist;
-							}
-						})
-						.map((playlist) => (
-							<div
-								className="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3"
-								key={playlist.id}
-							>
-								<Link href={`/playlist/${playlist.id}`}>
-									<div className="item">
-										<div className="item-cover">
-											<div className="item-cover-overlay"></div>
-											<img
-												src={playlist.coverUrl}
-												alt="Playlist cover"
-											/>
+		<div className="playlistOverview">
+			<div className="playlist">
+				<div className="playlist-search">
+					<BsSearch onClick={showSearch} />
+					<input
+						ref={searchInputRef}
+						onChange={(e) => setSearchInput(e.target.value)}
+						type="text"
+						placeholder="Search"
+						className={hideSearch ? "hide" : "show"}
+					/>
+				</div>
+				<h2>Playlists</h2>
+				<div className="playlist-list">
+					<div className="row">
+						{playlists
+							.filter((playlist) => {
+								if (searchInput === "") {
+									return playlist;
+								} else if (
+									playlist.name
+										.toLowerCase()
+										.includes(searchInput.toLowerCase())
+								) {
+									return playlist;
+								}
+							})
+							.map((playlist) => (
+								<div
+									className="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3"
+									key={playlist.id}
+								>
+									<Link href={`/playlist/${playlist.id}`}>
+										<div className="item">
+											<div className="item-cover">
+												<div className="item-cover-overlay"></div>
+												<img
+													src={playlist.coverUrl}
+													alt="Playlist cover"
+												/>
+											</div>
+											<div className="item-name">
+												{playlist.name}
+											</div>
 										</div>
-										<div className="item-name">
-											{playlist.name}
-										</div>
-									</div>
-								</Link>
-							</div>
-						))}
+									</Link>
+								</div>
+							))}
+					</div>
 				</div>
 			</div>
 		</div>

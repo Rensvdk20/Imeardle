@@ -1,4 +1,6 @@
-import { Fragment } from "react";
+"use client";
+
+import { useSearchParams } from "next/navigation";
 
 import ImeardlePlayer from "../components/music/ImeardlePlayer";
 
@@ -9,9 +11,12 @@ export const metadata = {
 };
 
 function App() {
+	const searchParams = useSearchParams();
+	const playlistId = searchParams.get("playlistId");
+
 	return (
 		<div className="playerContainer">
-			<ImeardlePlayer />
+			<ImeardlePlayer playlistId={playlistId} />
 		</div>
 	);
 }
