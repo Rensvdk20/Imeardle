@@ -17,7 +17,7 @@ import Modal from "react-bootstrap/Modal";
 import "./imeardlePlayer.scss";
 
 import dynamic from "next/dynamic";
-const Player = dynamic(() => import("../../components/music/Player"), {
+const Player = dynamic(() => import("../../components/player/Player"), {
 	ssr: false,
 });
 

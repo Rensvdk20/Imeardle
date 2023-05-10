@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 
-import ImeardlePlayer from "../components/music/ImeardlePlayer";
+import ImeardlePlayer from "../components/player/ImeardlePlayer";
 
 import "./page.scss";
 
