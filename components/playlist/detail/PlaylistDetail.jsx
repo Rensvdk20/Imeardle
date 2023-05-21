@@ -1,37 +1,54 @@
-"use client";
+import Link from "next/link";
 
-import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+async function getPlaylist(id) {
+	const res = await fetch(`${process.env.WEBSITE_URL}/api/playlist/${id}`, {
+		next: { revalidate: 10 },
+	});
 
-function PlaylistDetail({ params }) {
-	const { push } = useRouter();
-	const [playlist, setData] = useState({});
+	return res.json();
+}
 
-	useEffect(() => {
-		fetch(`/api/playlist/${params.id}`, {
-			next: { revalidate: 10 },
-		}).then(async (res) => {
-			const playlist = await res.json();
-			console.log(playlist);
-			setData(playlist);
-		});
-	}, []);
-
-	const selectPlaylist = () => {
-		push("/?playlistId=" + params.id);
-	};
+async function PlaylistDetail({ playlistId }) {
+	const playlist = await getPlaylist(playlistId);
 
 	return (
 		<div className="playlistDetail">
-			<button
-				className="btn playlistDetail-select"
-				onClick={selectPlaylist}
-			>
-				Use this playlist
-			</button>
+			{playlist.Songs.length !== 0 ? (
+				<button
+					className="btn playlistDetail-select"
+					id="selectPlaylistDesktop"
+				>
+					<Link
+						href={{
+							pathname: "/",
+							query: { playlistId },
+						}}
+						prefetch={false}
+					>
+						Use this playlist
+					</Link>
+				</button>
+			) : (
+				""
+			)}
 			<div className="playlist">
 				<img src={playlist.coverUrl} alt={playlist.name} />
 				<h1>{playlist.name}</h1>
+				{playlist.Songs.length !== 0 ? (
+					<button className="btn" id="selectPlaylistMobile">
+						<Link
+							href={{
+								pathname: "/",
+								query: { playlistId },
+							}}
+							prefetch={false}
+						>
+							Use this playlist
+						</Link>
+					</button>
+				) : (
+					""
+				)}
 			</div>
 			<div className="songs">
 				<div className="row">

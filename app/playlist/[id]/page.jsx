@@ -5,7 +5,7 @@ async function PlaylistDetailPage({ params }) {
 	return (
 		<div className="container">
 			<div className="row">
-				<PlaylistDetail params={params} />
+				<PlaylistDetail playlistId={params.id} />
 			</div>
 		</div>
 	);

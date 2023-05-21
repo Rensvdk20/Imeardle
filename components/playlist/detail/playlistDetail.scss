@@ -29,6 +29,10 @@
             border-radius: 50%;
         }
 
+        // @media #{$md} {
+        //     // margin-top: 60px;
+        // }
+
         @media #{$sm} {
             img {
                 width: 100%;
@@ -47,6 +51,21 @@
             box-shadow: 0 0 5px rgb(0 0 0 / 20%);
             background-color: lighten($primary, .5);
             border-radius: 5px;
+        }
+    }
+
+    #selectPlaylistMobile {
+        margin-top: 10px;
+        display: none;;
+    }
+
+    @media #{$md} {
+        #selectPlaylistDesktop {
+            display: none;
+        }
+
+        #selectPlaylistMobile {
+            display: block;
         }
     }
 }
