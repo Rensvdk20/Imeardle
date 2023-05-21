@@ -37,7 +37,7 @@ export default async function handler(req, res) {
 		case "PUT":
 			try {
 				const { id } = req.query;
-				const { name, coverUrl } = req.body;
+				const { name, coverUrl, songs = [] } = req.body;
 				const playlist = await prisma.playlist.update({
 					where: {
 						id,
@@ -45,6 +45,16 @@ export default async function handler(req, res) {
 					data: {
 						name,
 						coverUrl,
+						Songs: {
+							updateMany: songs.map((song) => ({
+								where: { id: song.id },
+								data: {
+									title: song.title,
+									songUrl: song.songUrl,
+									coverUrl: song.coverUrl,
+								},
+							})),
+						},
 					},
 				});
 				res.status(200).json(playlist);
