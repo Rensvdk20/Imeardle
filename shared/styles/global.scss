@@ -23,6 +23,17 @@ body {
     font-family: 'Typold Regular';
 }
 
+nav {
+    #navbarNav {
+        position: relative;
+    }
+
+    .nav-manager {
+        position: absolute;
+        right: 0;
+    }
+}
+
 a {
     color: $white;
     text-decoration: none;
@@ -43,6 +54,28 @@ a {
 .btn {
     color: $white;
     outline: none;
+}
+
+// .btn-primary {
+//     background-color: $primary;
+//     border: none;
+
+//     &:hover {
+//         background-color: lighten($primary, 3);
+//     }
+// }
+
+.btn-secondary {
+    background-color: $secondary;
+    border: none;
+
+    &:hover {
+        background-color: darken($secondary, 10);
+    }
+
+    &:active, &:focus-visible {
+        background-color: darken($secondary, 15) !important;
+    }
 }
 
 .btn-controls {

@@ -2,12 +2,21 @@
 
 .playlistOverview {
     .playlist {
+        h2 {
+            margin-bottom: 15px;
+        }
+
         &-search {
             margin: 20px 0 20px 5px;
 
-            svg {
+            &-icon {
                 cursor: pointer;
-                margin-right: 10px;
+                display: inline-block;
+                width: fit-content;
+                
+                svg {
+                    margin-right: 10px;
+                }
             }
 
             input[type=text] {
@@ -69,7 +78,7 @@
         &-list {
             > .row {
                 > div {
-                    margin-bottom: 15px;
+                    margin-bottom: 25px;
                 }
             }
             .item {

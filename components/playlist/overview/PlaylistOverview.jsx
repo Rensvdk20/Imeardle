@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 
+import "./PlaylistOverview.scss";
+
 import { BsSearch } from "react-icons/bs";
 
-function Playlist() {
+function PlaylistOverview({ managerOverview }) {
 	const [playlists, setPlaylists] = useState([]);
 
 	const searchInputRef = useRef(null);
@@ -13,9 +15,13 @@ function Playlist() {
 	const [searchInput, setSearchInput] = useState("");
 
 	const loadAllPlaylists = async () => {
-		const res = await fetch("/api/playlist", { next: { revalidate: 10 } });
+		const res = await fetch("/api/playlist", {
+			next: {
+				tags: ["playlists"],
+				revalidate: 10,
+			},
+		});
 		const data = await res.json();
-		console.log(data);
 
 		setPlaylists(data);
 	};
@@ -27,22 +33,33 @@ function Playlist() {
 	const showSearch = () => {
 		setHideSearch(!hideSearch);
 		searchInputRef.current.style.visibility = "visible";
+
+		if (hideSearch) {
+			searchInputRef.current.disabled = false;
+		} else {
+			searchInputRef.current.disabled = true;
+		}
+
+		searchInputRef.current.select();
 	};
 
 	return (
 		<div className="playlistOverview">
 			<div className="playlist">
 				<div className="playlist-search">
-					<BsSearch onClick={showSearch} />
+					<div className="playlist-search-icon" onClick={showSearch}>
+						<BsSearch />
+					</div>
 					<input
 						ref={searchInputRef}
 						onChange={(e) => setSearchInput(e.target.value)}
 						type="text"
 						placeholder="Search"
+						// disabled={hideSearch}
 						className={hideSearch ? "hide" : "show"}
 					/>
 				</div>
-				<h2>Playlists</h2>
+				<h2>My Playlists</h2>
 				<div className="playlist-list">
 					<div className="row">
 						{playlists
@@ -59,7 +76,7 @@ function Playlist() {
 							})
 							.map((playlist) => (
 								<div
-									className="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3"
+									className="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3"
 									key={playlist.id}
 								>
 									<Link href={`/playlist/${playlist.id}`}>
@@ -85,4 +102,4 @@ function Playlist() {
 	);
 }
 
-export default Playlist;
+export default PlaylistOverview;

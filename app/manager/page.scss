@@ -1,0 +1,31 @@
+@import "/shared/styles/global";
+
+.manager {
+    .column-left {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+    }
+
+    @media #{$lg} {
+        .column-left {
+            height: 35vh;
+        }
+    }
+
+    @media #{$sm} {
+        .column-left {
+            margin: 40px 0;
+
+            form {
+                width: 90vw;
+                margin: 0 auto;
+
+                label, input[type=text] {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

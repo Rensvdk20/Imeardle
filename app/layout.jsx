@@ -51,6 +51,14 @@ export default function RootLayout({ children }) {
 									</Link>
 								</li>
 							</ul>
+
+							<ul className="navbar-nav nav-manager">
+								<li className="nav-item">
+									<Link className="nav-link" href="manager">
+										My playlists
+									</Link>
+								</li>
+							</ul>
 						</div>
 					</div>
 				</nav>
