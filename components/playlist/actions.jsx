@@ -2,7 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 
-export async function editPlaylist(editedPlaylist) {
+export async function editPlaylistAction(editedPlaylist) {
 	console.log(editedPlaylist);
 	const res = await fetch(
 		`${process.env.WEBSITE_URL}/api/playlist/${editedPlaylist.id}`,
@@ -18,6 +18,16 @@ export async function editPlaylist(editedPlaylist) {
 			}),
 		}
 	);
+
+	if (res.ok) {
+		revalidateTag("playlists");
+	}
+}
+
+export async function DeleteSongAction(songId, playlistId) {
+	const res = await fetch(`${process.env.WEBSITE_URL}/api/song/${songId}`, {
+		method: "DELETE",
+	});
 
 	if (res.ok) {
 		revalidateTag("playlists");
