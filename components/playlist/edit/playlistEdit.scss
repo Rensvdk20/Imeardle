@@ -77,44 +77,119 @@
             }
         
             .song {
-                padding: 10px;
+                padding: 10px 10px 10px 5px;
                 margin-bottom: 10px;
                 box-shadow: 0 0 5px rgb(0 0 0 / 20%);
                 background-color: lighten($primary, .5);
                 border-radius: 5px;
 
-                &-title {
-                    display: inline-block;
-                    width: 75%;
+                input[type=text] {
+                    width: 100%;
+                    background-color: $primary;
+                    color: $white;
+                    border: none;
+                    border-bottom: 1px solid $white;
+                    transition: border-bottom 125ms ease-in-out;
+                    
+                    &:focus{
+                        outline: none;
+                    }
 
-                    input[type=text] {
-                        width: 100%;
-                        background-color: $primary;
-                        color: $white;
-                        border: none;
-                        border-bottom: 1px solid $white;
-                        transition: border-bottom 125ms ease-in-out;
-                        
-                        &:focus{
-                            outline: none;
-                        }
-
-                        &:read-only {
-                            border-bottom: 1px solid transparent;
-                        }
+                    &:read-only {
+                        border-bottom: 1px solid transparent;
                     }
                 }
 
-                &-edit {
+                &-top {
+                    display: grid;
+                    grid-template-columns: 30px auto 50px;
+                    align-items: center;
+                }
+
+                &-collapse {
+                    cursor: pointer;
+                    display: flex;
+                    padding: 0px 5px;
+
+                    svg {
+                        margin: 2px 2px 2px 0;
+                        transition: transform .15s ease-in-out;
+                    }
+                }
+
+                &-title {
                     display: inline-block;
-                    width: fit-content;
-                    float: right;
+                    // width: 75%;
+
+                    // > svg {
+                    //     display: inline-block;
+                    // }
+
+                    // input[type=text] {
+                    //     width: 100%;
+                    //     background-color: $primary;
+                    //     color: $white;
+                    //     border: none;
+                    //     border-bottom: 1px solid $white;
+                    //     transition: border-bottom 125ms ease-in-out;
+                        
+                    //     &:focus{
+                    //         outline: none;
+                    //     }
+
+                    //     &:read-only {
+                    //         border-bottom: 1px solid transparent;
+                    //     }
+                    // }
+                }
+
+                &-edit {
+                    // display: inline-block;
+                    // width: fit-content;
+                    // float: right;
 
                     svg {
                         cursor: pointer;
                     }
                 }
+
+                &-extra {
+                    display: grid;
+                    grid-template-columns: 25px auto;
+                    align-items: center;
+                    row-gap: 10px;
+                    margin-top: 5px;
+                    padding-left: 5px;
+
+                    &.collapse:not(.show) {
+                        display: none;
+                    }
+                }
             }
         }
+
+        @media #{$md} {
+            .songs  {
+                .song {
+                    &-top {
+                        grid-template-columns: 30px auto 100px;
+                    }
+
+                    &-edit {
+                        display: flex;
+                        justify-content: space-evenly;
+                        margin-top: 9px;
+                    }
+
+                    &-collapse {
+                        scale: 1.75;
+                    }
+                }
+            }
+        }
+    }
+
+    .rotate-90 {
+        transform: rotate(90deg);
     }
 }

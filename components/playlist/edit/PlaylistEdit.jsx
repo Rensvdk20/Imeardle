@@ -1,15 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { editPlaylist } from "../actions.jsx";
+import { editPlaylistAction, DeleteSongAction } from "../actions.jsx";
+
+import Collapse from "react-bootstrap/Collapse";
+import Fade from "react-bootstrap/Fade";
 
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
+import { IoIosArrowForward } from "react-icons/io";
+import { BsMusicNote, BsImage } from "react-icons/bs";
 
 export default function EditPlaylist({ playlistId }) {
-	const [playlist, setData] = useState({});
+	const [playlist, setPlaylist] = useState({});
 	const [inputStates, setInputStates] = useState({});
+	const [collapseStates, setCollapseStates] = useState({});
 
 	useEffect(() => {
+		getPlaylist();
+	}, []);
+
+	const getPlaylist = () => {
 		fetch(`/api/playlist/${playlistId}`, {
 			next: {
 				tags: ["playlists"],
@@ -18,47 +28,89 @@ export default function EditPlaylist({ playlistId }) {
 		}).then(async (res) => {
 			const playlistTest = await res.json();
 			console.log(playlistTest);
-			setData(playlistTest);
+			setPlaylist(playlistTest);
 		});
-	}, []);
+	};
+
+	const deleteSong = async (songId) => {
+		await DeleteSongAction(songId);
+		getPlaylist();
+	};
 
 	const submitChanges = (formData) => {
-		let count = 0;
-		const editedPlaylist = {
+		let formItems = [];
+		const formPlaylist = {
 			id: playlist.id,
 			name: "",
 			coverUrl: "",
 			songs: [],
 		};
 
-		//Skip the first two entries because they are the name and coverUrl
-		for (const [formSongId, formSongTitle] of getPlaylistInfo(
-			formData.entries()
-		)) {
-			if (
-				formSongId === playlist.Songs[count].id &&
-				formSongTitle != playlist.Songs[count].title
-			) {
-				//Found a changed song
-				editedPlaylist.songs.push({
-					id: formSongId,
-					title: formSongTitle,
-				});
+		let playlistItemCount = 0;
+		let playlistCount = 0;
+		// Change the form results into the same format as the playlist from the database
+		for (const [songId, value] of getPlaylistInfo(formData.entries())) {
+			if (playlistItemCount === 0) {
+				//Add the title
+				formItems[playlistCount] = {
+					id: songId,
+					title: value,
+					songUrl: "",
+					coverUrl: "",
+				};
+
+				playlistItemCount++;
+			} else {
+				if (playlistItemCount === 1) {
+					//Add the song url
+					formItems[playlistCount].songUrl = value;
+					playlistItemCount++;
+				} else if (playlistItemCount === 2) {
+					//Add the cover url
+					formItems[playlistCount].coverUrl = value;
+					playlistItemCount = 0;
+					playlistCount++;
+				} else {
+					playlistItemCount = 0;
+				}
 			}
-
-			// console.log(editedPlaylist);
-
-			count++;
 		}
 
-		editPlaylist(editedPlaylist);
-
 		function getPlaylistInfo(iterator) {
-			editedPlaylist.name = iterator.next().value[1];
-			editedPlaylist.coverUrl = iterator.next().value[1];
+			formPlaylist.name = iterator.next().value[1];
+			formPlaylist.coverUrl = iterator.next().value[1];
 
 			return iterator;
 		}
+
+		// Compare the form results with the playlist from the database, if something changed only send the change to the database
+		for (let i = 0; i < formItems.length; i++) {
+			const formSong = formItems[i];
+			const playlistSong = playlist.Songs[i];
+
+			if (
+				formSong.title !== playlistSong.title ||
+				formSong.coverUrl !== playlistSong.coverUrl ||
+				formSong.songUrl !== playlistSong.songUrl
+			) {
+				formPlaylist.songs.push({
+					id: formSong.id,
+					...(formSong.title !== playlistSong.title && {
+						title: formSong.title,
+					}),
+					...(formSong.coverUrl !== playlistSong.coverUrl && {
+						coverUrl: formSong.coverUrl,
+					}),
+					...(formSong.songUrl !== playlistSong.songUrl && {
+						songUrl: formSong.songUrl,
+					}),
+				});
+			}
+		}
+
+		console.log(formPlaylist);
+
+		editPlaylistAction(formPlaylist);
 	};
 
 	const toggleInput = (songId) => {
@@ -67,6 +119,14 @@ export default function EditPlaylist({ playlistId }) {
 			[songId]: !prevState[songId],
 		}));
 	};
+
+	const toggleCollapse = (songId) => {
+		setCollapseStates((prevState) => ({
+			...prevState,
+			[songId]: !prevState[songId],
+		}));
+	};
+
 	return (
 		<div className="playlistEdit">
 			<form
@@ -118,31 +178,104 @@ export default function EditPlaylist({ playlistId }) {
 											key={song.id}
 										>
 											<div className="song">
-												<div className="song-title">
-													<input
-														type="text"
-														id={song.id}
-														name={song.id}
-														defaultValue={
-															song.title
-														}
-														readOnly={
-															!inputStates[
+												<div className="song-top">
+													<div
+														className="song-collapse"
+														onClick={() => {
+															toggleCollapse(
 																song.id
-															]
+															);
+
+															toggleInput(
+																song.id
+															);
+														}}
+														aria-expanded={
+															collapseStates
 														}
-													/>
+													>
+														<IoIosArrowForward
+															className={
+																collapseStates[
+																	song.id
+																]
+																	? "rotate-90"
+																	: ""
+															}
+														/>
+													</div>
+													<div className="song-title">
+														<input
+															type="text"
+															id={song.id}
+															name={song.id}
+															defaultValue={
+																song.title
+															}
+															readOnly={
+																!inputStates[
+																	song.id
+																]
+															}
+														/>
+													</div>
+													<div className="song-edit">
+														<AiFillEdit
+															size={22}
+															onClick={() =>
+																toggleInput(
+																	song.id
+																)
+															}
+														/>
+														&nbsp;
+														<AiFillDelete
+															size={22}
+															onClick={() =>
+																deleteSong(
+																	song.id
+																)
+															}
+														/>
+													</div>
 												</div>
-												<div className="song-edit">
-													<AiFillEdit
-														size={22}
-														onClick={() =>
-															toggleInput(song.id)
-														}
-													/>
-													&nbsp;
-													<AiFillDelete size={22} />
-												</div>
+												<Collapse
+													dimension={"height"}
+													in={collapseStates[song.id]}
+												>
+													<div className="song-extra">
+														<BsMusicNote
+															size={18}
+														/>
+														<input
+															type="text"
+															name={song.id}
+															defaultValue={
+																song.songUrl
+															}
+															readOnly={
+																!inputStates[
+																	song.id
+																]
+															}
+															placeholder="Soundcloud URL"
+														/>
+														<BsImage size={16} />
+														<input
+															type="text"
+															name={song.id}
+															defaultValue={
+																song.coverUrl
+															}
+															readOnly={
+																!inputStates[
+																	song.id
+																]
+															}
+															placeholder="Song cover URL"
+														/>
+													</div>
+												</Collapse>
 											</div>
 										</div>
 									))}
