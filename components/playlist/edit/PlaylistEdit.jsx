@@ -9,7 +9,7 @@ import Fade from "react-bootstrap/Fade";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { IoIosArrowForward } from "react-icons/io";
 import { BsMusicNote, BsImage } from "react-icons/bs";
-import { GiCheckMark } from "react-icons/gi";
+import { IoMdCheckmark } from "react-icons/io";
 import { RxCross1 } from "react-icons/rx";
 
 export default function EditPlaylist({ playlistId }) {
@@ -17,6 +17,8 @@ export default function EditPlaylist({ playlistId }) {
 	const [inputStates, setInputStates] = useState({});
 	const [collapseStates, setCollapseStates] = useState({});
 	const [deleteOptionStates, setDeleteOptionStates] = useState({});
+
+	const [savingPlaylistState, setSavingPlaylistState] = useState(0);
 
 	useEffect(() => {
 		getPlaylist();
@@ -40,7 +42,10 @@ export default function EditPlaylist({ playlistId }) {
 		getPlaylist();
 	};
 
-	const submitChanges = (formData) => {
+	const submitChanges = async (formData) => {
+		// Set playlist save to saving...
+		setSavingPlaylistState(1);
+
 		let formItems = [];
 		const formPlaylist = {
 			id: playlist.id,
@@ -113,7 +118,17 @@ export default function EditPlaylist({ playlistId }) {
 
 		console.log(formPlaylist);
 
-		editPlaylistAction(formPlaylist);
+		const saveResult = await editPlaylistAction(formPlaylist);
+		if (saveResult === true) {
+			// Set playlist save state to saved
+			setSavingPlaylistState(2);
+			setTimeout(() => {
+				setSavingPlaylistState(0);
+			}, 5000);
+		} else {
+			// Set playlist save state to error
+			setSavingPlaylistState(3);
+		}
 	};
 
 	const toggleInput = (songId) => {
@@ -175,6 +190,17 @@ export default function EditPlaylist({ playlistId }) {
 							<button className="btn btn-secondary" type="submit">
 								Submit
 							</button>
+							<div className="form-result">
+								<Fade in={savingPlaylistState > 0}>
+									<h5>
+										{savingPlaylistState === 1
+											? "Saving..."
+											: savingPlaylistState === 3
+											? "Error!"
+											: "Saved!"}
+									</h5>
+								</Fade>
+							</div>
 						</div>
 					</div>
 					<div className="col-xl-8 col-lg-6 col-md-6 list-column">
@@ -227,6 +253,7 @@ export default function EditPlaylist({ playlistId }) {
 																	song.id
 																]
 															}
+															minLength={3}
 														/>
 													</div>
 													<div
@@ -265,8 +292,8 @@ export default function EditPlaylist({ playlistId }) {
 																: "hide"
 														}`}
 													>
-														<GiCheckMark
-															size={20}
+														<IoMdCheckmark
+															size={22}
 															onClick={() =>
 																deleteSong(
 																	song.id
@@ -303,6 +330,7 @@ export default function EditPlaylist({ playlistId }) {
 																	song.id
 																]
 															}
+															minLength={3}
 															placeholder="Soundcloud URL"
 														/>
 														<BsImage size={16} />
@@ -317,6 +345,7 @@ export default function EditPlaylist({ playlistId }) {
 																	song.id
 																]
 															}
+															minLength={3}
 															placeholder="Song cover URL"
 														/>
 													</div>

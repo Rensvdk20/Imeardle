@@ -28,7 +28,10 @@ export async function editPlaylistAction(editedPlaylist) {
 
 	if (res.ok) {
 		revalidateTag("playlists");
+		return true;
 	}
+
+	return false;
 }
 
 export async function DeleteSongAction(songId, playlistId) {
