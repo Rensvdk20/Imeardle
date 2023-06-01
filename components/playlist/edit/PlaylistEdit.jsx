@@ -9,11 +9,14 @@ import Fade from "react-bootstrap/Fade";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { IoIosArrowForward } from "react-icons/io";
 import { BsMusicNote, BsImage } from "react-icons/bs";
+import { GiCheckMark } from "react-icons/gi";
+import { RxCross1 } from "react-icons/rx";
 
 export default function EditPlaylist({ playlistId }) {
 	const [playlist, setPlaylist] = useState({});
 	const [inputStates, setInputStates] = useState({});
 	const [collapseStates, setCollapseStates] = useState({});
+	const [deleteOptionStates, setDeleteOptionStates] = useState({});
 
 	useEffect(() => {
 		getPlaylist();
@@ -26,9 +29,9 @@ export default function EditPlaylist({ playlistId }) {
 				revalidate: 10,
 			},
 		}).then(async (res) => {
-			const playlistTest = await res.json();
-			console.log(playlistTest);
-			setPlaylist(playlistTest);
+			const playlistRes = await res.json();
+			console.log(playlistRes);
+			setPlaylist(playlistRes);
 		});
 	};
 
@@ -127,6 +130,13 @@ export default function EditPlaylist({ playlistId }) {
 		}));
 	};
 
+	const toggleDeleteOption = (songId) => {
+		setDeleteOptionStates((prevState) => ({
+			...prevState,
+			[songId]: !prevState[songId],
+		}));
+	};
+
 	return (
 		<div className="playlistEdit">
 			<form
@@ -219,7 +229,15 @@ export default function EditPlaylist({ playlistId }) {
 															}
 														/>
 													</div>
-													<div className="song-edit">
+													<div
+														className={`song-edit ${
+															!deleteOptionStates[
+																song.id
+															]
+																? ""
+																: "hide"
+														}`}
+													>
 														<AiFillEdit
 															size={22}
 															onClick={() =>
@@ -231,11 +249,38 @@ export default function EditPlaylist({ playlistId }) {
 														&nbsp;
 														<AiFillDelete
 															size={22}
+															onClick={() => {
+																toggleDeleteOption(
+																	song.id
+																);
+															}}
+														/>
+													</div>
+													<div
+														className={`song-delete-option ${
+															deleteOptionStates[
+																song.id
+															]
+																? ""
+																: "hide"
+														}`}
+													>
+														<GiCheckMark
+															size={20}
 															onClick={() =>
 																deleteSong(
 																	song.id
 																)
 															}
+														/>
+														<RxCross1
+															id="cross"
+															size={20}
+															onClick={() => {
+																toggleDeleteOption(
+																	song.id
+																);
+															}}
 														/>
 													</div>
 												</div>

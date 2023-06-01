@@ -14,8 +14,15 @@ export async function editPlaylistAction(editedPlaylist) {
 			body: JSON.stringify({
 				name: editedPlaylist.name,
 				coverUrl: editedPlaylist.coverUrl,
-				songs: editedPlaylist.songs,
+				...(editedPlaylist.songs.length > 0 && {
+					songs: editedPlaylist.songs,
+				}),
 			}),
+			next: {
+				cache: "no-cache",
+				revalidate: false,
+				tags: ["playlists"],
+			},
 		}
 	);
 

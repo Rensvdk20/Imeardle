@@ -119,37 +119,19 @@
 
                 &-title {
                     display: inline-block;
-                    // width: 75%;
-
-                    // > svg {
-                    //     display: inline-block;
-                    // }
-
-                    // input[type=text] {
-                    //     width: 100%;
-                    //     background-color: $primary;
-                    //     color: $white;
-                    //     border: none;
-                    //     border-bottom: 1px solid $white;
-                    //     transition: border-bottom 125ms ease-in-out;
-                        
-                    //     &:focus{
-                    //         outline: none;
-                    //     }
-
-                    //     &:read-only {
-                    //         border-bottom: 1px solid transparent;
-                    //     }
-                    // }
                 }
 
-                &-edit {
-                    // display: inline-block;
-                    // width: fit-content;
-                    // float: right;
-
+                &-edit, &-delete-option {
                     svg {
                         cursor: pointer;
+                    }
+
+                    > #cross {
+                        margin-left: 5px;
+                    }
+
+                    &.hide {
+                        display: none;
                     }
                 }
 
