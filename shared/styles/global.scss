@@ -56,14 +56,19 @@ a {
     outline: none;
 }
 
-// .btn-primary {
-//     background-color: $primary;
-//     border: none;
+.btn-primary {
+    background-color: lighten($primary, 1);
+    box-shadow: 0 0 5px rgb(0 0 0 / 20%);
+    border: none;
 
-//     &:hover {
-//         background-color: lighten($primary, 3);
-//     }
-// }
+    &:hover {
+        background-color: lighten($primary, 3);
+    }
+
+    &:active, &:focus-visible {
+        background-color: darken($primary, 1) !important;
+    }
+}
 
 .btn-secondary {
     background-color: $secondary;

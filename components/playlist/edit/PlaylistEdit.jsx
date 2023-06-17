@@ -1,12 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { editPlaylistAction, DeleteSongAction } from "../actions.jsx";
+import {
+	editPlaylistAction,
+	addSongAction,
+	deleteSongAction,
+} from "../actions.jsx";
 
 import Collapse from "react-bootstrap/Collapse";
 import Fade from "react-bootstrap/Fade";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
-import { AiFillEdit, AiFillDelete } from "react-icons/ai";
+import { AiFillEdit, AiFillDelete, AiOutlinePlus } from "react-icons/ai";
 import { IoIosArrowForward } from "react-icons/io";
 import { BsMusicNote, BsImage } from "react-icons/bs";
 import { IoMdCheckmark } from "react-icons/io";
@@ -14,11 +20,12 @@ import { RxCross1 } from "react-icons/rx";
 
 export default function EditPlaylist({ playlistId }) {
 	const [playlist, setPlaylist] = useState({});
-	const [inputStates, setInputStates] = useState({});
 	const [collapseStates, setCollapseStates] = useState({});
 	const [deleteOptionStates, setDeleteOptionStates] = useState({});
 
 	const [savingPlaylistState, setSavingPlaylistState] = useState(0);
+
+	const [showAddSongModal, setShowAddSongModal] = useState(false);
 
 	useEffect(() => {
 		getPlaylist();
@@ -38,11 +45,21 @@ export default function EditPlaylist({ playlistId }) {
 	};
 
 	const deleteSong = async (songId) => {
-		await DeleteSongAction(songId);
+		await deleteSongAction(songId);
 		getPlaylist();
 	};
 
-	const submitChanges = async (formData) => {
+	const submitAddSong = async (song) => {
+		await addSongAction({
+			title: song.get("title"),
+			songUrl: song.get("songUrl"),
+			coverUrl: song.get("coverUrl"),
+			playlistId: playlist.id,
+		});
+		getPlaylist();
+	};
+
+	const submitEditPlaylist = async (formData) => {
 		// Set playlist save to saving...
 		setSavingPlaylistState(1);
 
@@ -131,13 +148,6 @@ export default function EditPlaylist({ playlistId }) {
 		}
 	};
 
-	const toggleInput = (songId) => {
-		setInputStates((prevState) => ({
-			...prevState,
-			[songId]: !prevState[songId],
-		}));
-	};
-
 	const toggleCollapse = (songId) => {
 		setCollapseStates((prevState) => ({
 			...prevState,
@@ -156,7 +166,7 @@ export default function EditPlaylist({ playlistId }) {
 		<div className="playlistEdit">
 			<form
 				action={(formData) => {
-					submitChanges(formData);
+					submitEditPlaylist(formData);
 				}}
 			>
 				<div className="row">
@@ -171,7 +181,6 @@ export default function EditPlaylist({ playlistId }) {
 										placeholder="Ex. Queen"
 										defaultValue={playlist.name}
 										name="name"
-										id="name"
 									/>
 								</label>
 							</div>
@@ -183,7 +192,6 @@ export default function EditPlaylist({ playlistId }) {
 										placeholder="Ex. https:i.imgur.com/GHkIb4B.jpg"
 										defaultValue={playlist.coverUrl}
 										name="coverUrl"
-										id="coverUrl"
 									/>
 								</label>
 							</div>
@@ -207,6 +215,23 @@ export default function EditPlaylist({ playlistId }) {
 						<h2>Songs</h2>
 						<div className="songs">
 							<div className="row">
+								<div className="col-12">
+									<div className="add-song">
+										<button
+											type="button"
+											className="btn btn-primary"
+											onClick={() => {
+												setShowAddSongModal(true);
+											}}
+										>
+											<AiOutlinePlus size={20} />
+											&nbsp;Add song
+										</button>
+										<hr />
+									</div>
+								</div>
+							</div>
+							<div className="row">
 								{playlist.Songs &&
 									playlist.Songs.map((song) => (
 										<div
@@ -219,10 +244,6 @@ export default function EditPlaylist({ playlistId }) {
 														className="song-collapse"
 														onClick={() => {
 															toggleCollapse(
-																song.id
-															);
-
-															toggleInput(
 																song.id
 															);
 														}}
@@ -249,7 +270,7 @@ export default function EditPlaylist({ playlistId }) {
 																song.title
 															}
 															readOnly={
-																!inputStates[
+																!collapseStates[
 																	song.id
 																]
 															}
@@ -267,11 +288,11 @@ export default function EditPlaylist({ playlistId }) {
 													>
 														<AiFillEdit
 															size={22}
-															onClick={() =>
-																toggleInput(
+															onClick={() => {
+																toggleCollapse(
 																	song.id
-																)
-															}
+																);
+															}}
 														/>
 														&nbsp;
 														<AiFillDelete
@@ -326,7 +347,7 @@ export default function EditPlaylist({ playlistId }) {
 																song.songUrl
 															}
 															readOnly={
-																!inputStates[
+																!collapseStates[
 																	song.id
 																]
 															}
@@ -341,7 +362,7 @@ export default function EditPlaylist({ playlistId }) {
 																song.coverUrl
 															}
 															readOnly={
-																!inputStates[
+																!collapseStates[
 																	song.id
 																]
 															}
@@ -358,6 +379,62 @@ export default function EditPlaylist({ playlistId }) {
 					</div>
 				</div>
 			</form>
+			<Modal show={showAddSongModal} centered>
+				<form
+					action={(songData) => {
+						submitAddSong(songData);
+					}}
+				>
+					<Modal.Body className="addSongModal">
+						<label htmlFor="newSongName">
+							<span>Song name</span>
+							<input
+								type="text"
+								name="title"
+								minLength={3}
+								placeholder="Ex. Bohemian Rapsody"
+							/>
+						</label>
+						<label htmlFor="newSongURL">
+							<span>Song URL</span>
+							<input
+								type="text"
+								name="songUrl"
+								minLength={3}
+								placeholder="Ex. https://soundcloud.com/queen-69312/bohemian-rhapsody-remastered-1"
+							/>
+						</label>
+						<label htmlFor="newSongCover">
+							<span>Cover URL</span>
+							<input
+								type="text"
+								name="coverUrl"
+								minLength={3}
+								placeholder="Ex. https:i.imgur.com/GHkIb4B.jpg"
+							/>
+						</label>
+					</Modal.Body>
+					<Modal.Footer>
+						<Button
+							variant="secondary"
+							onClick={() => {
+								setShowAddSongModal(false);
+							}}
+						>
+							Close
+						</Button>
+						<Button
+							variant="primary"
+							type="submit"
+							onClick={() => {
+								setShowAddSongModal(false);
+							}}
+						>
+							New Song
+						</Button>
+					</Modal.Footer>
+				</form>
+			</Modal>
 		</div>
 	);
 }

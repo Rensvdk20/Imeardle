@@ -46,7 +46,7 @@ export default function RootLayout({ children }) {
 						>
 							<ul className="navbar-nav">
 								<li className="nav-item">
-									<Link className="nav-link" href="playlist">
+									<Link className="nav-link" href="/playlist">
 										Playlists
 									</Link>
 								</li>
@@ -54,7 +54,7 @@ export default function RootLayout({ children }) {
 
 							<ul className="navbar-nav nav-manager">
 								<li className="nav-item">
-									<Link className="nav-link" href="manager">
+									<Link className="nav-link" href="/manager">
 										My playlists
 									</Link>
 								</li>
