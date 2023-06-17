@@ -3,6 +3,8 @@ import prisma from "../../../prisma/client";
 export default async function handler(req, res) {
 	const { method } = req;
 
+	const songUrlRegex = new RegExp("^https:\\/\\/soundcloud\\.com\\/.*");
+
 	switch (method) {
 		// Get all
 		case "GET":
@@ -19,6 +21,14 @@ export default async function handler(req, res) {
 		case "POST":
 			try {
 				const { title, songUrl, coverUrl, playlistId } = req.body;
+
+				if (!songUrlRegex.test(songUrl)) {
+					res.status(400).json({
+						error: "Invalid songUrl, must start with https://soundcloud.com/",
+					});
+					return;
+				}
+
 				const song = await prisma.song.create({
 					data: {
 						title,
