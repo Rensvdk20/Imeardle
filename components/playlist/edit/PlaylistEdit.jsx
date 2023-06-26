@@ -27,8 +27,6 @@ export default function EditPlaylist({ playlistId }) {
 	const [collapseStates, setCollapseStates] = useState({});
 	const [deleteOptionStates, setDeleteOptionStates] = useState({});
 
-	const [savingPlaylistState, setSavingPlaylistState] = useState(0);
-
 	const [showAddSongModal, setShowAddSongModal] = useState(false);
 
 	const [uploadedImage, setUploadedImage] = useState("");
@@ -99,9 +97,6 @@ export default function EditPlaylist({ playlistId }) {
 	};
 
 	const submitEditPlaylist = async (formData) => {
-		// Set playlist save to saving...
-		setSavingPlaylistState(1);
-
 		let formItems = [];
 		const formPlaylist = {
 			id: playlist.id,
@@ -175,16 +170,6 @@ export default function EditPlaylist({ playlistId }) {
 		console.log(formPlaylist);
 
 		const saveResult = await editPlaylistAction(formPlaylist);
-		if (saveResult === true) {
-			// Set playlist save state to saved
-			setSavingPlaylistState(2);
-			setTimeout(() => {
-				setSavingPlaylistState(0);
-			}, 5000);
-		} else {
-			// Set playlist save state to error
-			setSavingPlaylistState(3);
-		}
 	};
 
 	const toggleCollapse = (songId) => {
@@ -205,7 +190,12 @@ export default function EditPlaylist({ playlistId }) {
 		<div className="playlistEdit">
 			<form
 				action={(formData) => {
-					submitEditPlaylist(formData);
+					// submitEditPlaylist(formData);
+					toast.promise(submitEditPlaylist(formData), {
+						loading: "Saving playlist...",
+						success: "Playlist saved!",
+						error: "Error saving playlist",
+					});
 				}}
 			>
 				<div className="row">
@@ -237,17 +227,6 @@ export default function EditPlaylist({ playlistId }) {
 							<button className="btn btn-secondary" type="submit">
 								Submit
 							</button>
-							<div className="form-result">
-								<Fade in={savingPlaylistState > 0}>
-									<h5>
-										{savingPlaylistState === 1
-											? "Saving..."
-											: savingPlaylistState === 3
-											? "Error!"
-											: "Saved!"}
-									</h5>
-								</Fade>
-							</div>
 						</div>
 					</div>
 					<div className="col-xl-8 col-lg-6 col-md-6 list-column">
@@ -443,15 +422,6 @@ export default function EditPlaylist({ playlistId }) {
 								placeholder="Ex. https://soundcloud.com/queen-69312/bohemian-rhapsody-remastered-1"
 							/>
 						</label>
-						{/* <label htmlFor="newSongCover">
-							<span>Cover URL</span>
-							<input
-								type="text"
-								name="coverUrl"
-								minLength={3}
-								placeholder="Ex. https:i.imgur.com/GHkIb4B.jpg"
-							/>
-						</label> */}
 						<div className="modal-add-song-image">
 							<CldUploadWidget
 								uploadPreset="dpjhj6bt"
@@ -515,14 +485,14 @@ export default function EditPlaylist({ playlistId }) {
 					</Modal.Body>
 					<Modal.Footer>
 						<Button
-							variant="secondary"
+							variant="primary"
 							onClick={() => {
 								setShowAddSongModal(false);
 							}}
 						>
 							Close
 						</Button>
-						<Button variant="primary" type="submit">
+						<Button variant="secondary" type="submit">
 							New Song
 						</Button>
 					</Modal.Footer>

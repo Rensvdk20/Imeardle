@@ -509,11 +509,11 @@ const ImeardlePlayer = (params) => {
 							<h2>{modalMessageState}</h2>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button variant="secondary" onClick={closeModal}>
+							<Button variant="primary" onClick={closeModal}>
 								Close
 							</Button>
 							<Button
-								variant="primary"
+								variant="secondary"
 								onClick={closeModalAndRandomizeNewSong}
 							>
 								New Song
