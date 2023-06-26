@@ -18,6 +18,10 @@ import { BsMusicNote, BsImage } from "react-icons/bs";
 import { IoMdCheckmark } from "react-icons/io";
 import { RxCross1 } from "react-icons/rx";
 
+import toast, { Toaster } from "react-hot-toast";
+
+import { CldImage, CldUploadWidget } from "next-cloudinary";
+
 export default function EditPlaylist({ playlistId }) {
 	const [playlist, setPlaylist] = useState({});
 	const [collapseStates, setCollapseStates] = useState({});
@@ -26,6 +30,20 @@ export default function EditPlaylist({ playlistId }) {
 	const [savingPlaylistState, setSavingPlaylistState] = useState(0);
 
 	const [showAddSongModal, setShowAddSongModal] = useState(false);
+
+	const [uploadedImage, setUploadedImage] = useState("");
+
+	const messageUploadImageError = () => toast.error("Error uploading image");
+	const messageUploadImageSuccess = () =>
+		toast.success("Image uploaded successfully");
+	const messageNoImageSelected = () => toast.error("No image selected");
+	const messageSongAdded = () => toast.success("Song added successfully!");
+	const messageSongError = () =>
+		toast.error(
+			"Something went wrong when adding the song! Please try again."
+		);
+	const messageFillInAllFields = () =>
+		toast.error("Please fill in all fields!");
 
 	useEffect(() => {
 		getPlaylist();
@@ -50,13 +68,34 @@ export default function EditPlaylist({ playlistId }) {
 	};
 
 	const submitAddSong = async (song) => {
-		await addSongAction({
-			title: song.get("title"),
-			songUrl: song.get("songUrl"),
-			coverUrl: song.get("coverUrl"),
-			playlistId: playlist.id,
-		});
-		getPlaylist();
+		if (uploadedImage.length > 0) {
+			const title = song.get("title");
+			const songUrl = song.get("songUrl");
+
+			console.log("title", title);
+			console.log("songUrl", songUrl);
+
+			if (title !== "" || songUrl !== "") {
+				const result = await addSongAction({
+					title: title,
+					songUrl: songUrl,
+					coverUrl: uploadedImage,
+					playlistId: playlist.id,
+				});
+
+				if (result === true) {
+					setShowAddSongModal(false);
+					messageSongAdded();
+					getPlaylist();
+				} else {
+					messageSongError();
+				}
+			} else {
+				messageFillInAllFields();
+			}
+		} else {
+			messageNoImageSelected();
+		}
 	};
 
 	const submitEditPlaylist = async (formData) => {
@@ -385,7 +424,7 @@ export default function EditPlaylist({ playlistId }) {
 						submitAddSong(songData);
 					}}
 				>
-					<Modal.Body className="addSongModal">
+					<Modal.Body className="modal-add-song">
 						<label htmlFor="newSongName">
 							<span>Song name</span>
 							<input
@@ -404,7 +443,7 @@ export default function EditPlaylist({ playlistId }) {
 								placeholder="Ex. https://soundcloud.com/queen-69312/bohemian-rhapsody-remastered-1"
 							/>
 						</label>
-						<label htmlFor="newSongCover">
+						{/* <label htmlFor="newSongCover">
 							<span>Cover URL</span>
 							<input
 								type="text"
@@ -412,7 +451,67 @@ export default function EditPlaylist({ playlistId }) {
 								minLength={3}
 								placeholder="Ex. https:i.imgur.com/GHkIb4B.jpg"
 							/>
-						</label>
+						</label> */}
+						<div className="modal-add-song-image">
+							<CldUploadWidget
+								uploadPreset="dpjhj6bt"
+								options={{
+									maxFiles: 1,
+									resourceType: "image",
+									cloudName: "do67csxma",
+									clientAllowedFormats: [
+										"png",
+										"webp",
+										"jpeg",
+										"jpg",
+									],
+									folder: "Imeardle",
+									return_delete_token: true,
+									maxFileSize: 10000000,
+									cropping: true,
+									croppingAspectRatio: 300 / 300,
+									croppingValidateDimensions: true,
+									showSkipCropButton: false,
+									//reduce file size
+								}}
+								onError={(error) => {
+									console.log(error);
+									messageUploadImageError();
+								}}
+								onUpload={(result) => {
+									setUploadedImage(result.info.secure_url);
+									// uploadImageError();
+									messageUploadImageSuccess();
+									console.log(result);
+								}}
+							>
+								{({ open }) => {
+									function handleOnClick(e) {
+										e.preventDefault();
+										open();
+									}
+									return (
+										<button
+											type="button"
+											className="btn btn-secondary"
+											onClick={handleOnClick}
+										>
+											Upload an Image
+										</button>
+									);
+								}}
+							</CldUploadWidget>
+							{uploadedImage.length > 0 ? (
+								<CldImage
+									src={uploadedImage}
+									width={300}
+									height={300}
+									style={{ objectFit: "cover" }}
+								/>
+							) : (
+								""
+							)}
+						</div>
 					</Modal.Body>
 					<Modal.Footer>
 						<Button
@@ -423,18 +522,18 @@ export default function EditPlaylist({ playlistId }) {
 						>
 							Close
 						</Button>
-						<Button
-							variant="primary"
-							type="submit"
-							onClick={() => {
-								setShowAddSongModal(false);
-							}}
-						>
+						<Button variant="primary" type="submit">
 							New Song
 						</Button>
 					</Modal.Footer>
 				</form>
 			</Modal>
+			<Toaster
+				position="top-right"
+				toastOptions={{
+					className: "toaster",
+				}}
+			/>
 		</div>
 	);
 }

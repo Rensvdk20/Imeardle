@@ -198,9 +198,10 @@
     }
 }
 
-.addSongModal {
+.modal-add-song {
     display: flex;
     flex-direction: column;
+    align-items: center;
 
     span {
         display: block;
@@ -223,6 +224,22 @@
             &:focus {
                 outline: none;
             }
+        }
+    }
+
+    &-image {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        
+        button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        img {
+            border-radius: 5px;
         }
     }
 }
