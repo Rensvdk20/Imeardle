@@ -24,6 +24,7 @@ import { CldImage, CldUploadWidget } from "next-cloudinary";
 
 export default function EditPlaylist({ playlistId }) {
 	const [playlist, setPlaylist] = useState({});
+	const [originalPlaylist, setOriginalPlaylist] = useState({});
 	const [collapseStates, setCollapseStates] = useState({});
 	const [deleteOptionStates, setDeleteOptionStates] = useState({});
 
@@ -42,6 +43,8 @@ export default function EditPlaylist({ playlistId }) {
 		);
 	const messageFillInAllFields = () =>
 		toast.error("Please fill in all fields!");
+	const messagePlaylistEdited = () =>
+		toast.success("Playlist edited successfully!");
 
 	useEffect(() => {
 		getPlaylist();
@@ -57,6 +60,7 @@ export default function EditPlaylist({ playlistId }) {
 			const playlistRes = await res.json();
 			console.log(playlistRes);
 			setPlaylist(playlistRes);
+			setOriginalPlaylist(JSON.parse(JSON.stringify(playlistRes)));
 		});
 	};
 
@@ -69,9 +73,6 @@ export default function EditPlaylist({ playlistId }) {
 		if (uploadedImage.length > 0) {
 			const title = song.get("title");
 			const songUrl = song.get("songUrl");
-
-			console.log("title", title);
-			console.log("songUrl", songUrl);
 
 			if (title !== "" || songUrl !== "") {
 				const result = await addSongAction({
@@ -97,79 +98,51 @@ export default function EditPlaylist({ playlistId }) {
 	};
 
 	const submitEditPlaylist = async (formData) => {
-		let formItems = [];
+		const formSongs = playlist.Songs;
 		const formPlaylist = {
 			id: playlist.id,
-			name: "",
-			coverUrl: "",
+			name: formData.get("name"),
+			coverUrl: formData.get("coverUrl"),
 			songs: [],
 		};
 
-		let playlistItemCount = 0;
-		let playlistCount = 0;
-		// Change the form results into the same format as the playlist from the database
-		for (const [songId, value] of getPlaylistInfo(formData.entries())) {
-			if (playlistItemCount === 0) {
-				//Add the title
-				formItems[playlistCount] = {
-					id: songId,
-					title: value,
-					songUrl: "",
-					coverUrl: "",
-				};
-
-				playlistItemCount++;
-			} else {
-				if (playlistItemCount === 1) {
-					//Add the song url
-					formItems[playlistCount].songUrl = value;
-					playlistItemCount++;
-				} else if (playlistItemCount === 2) {
-					//Add the cover url
-					formItems[playlistCount].coverUrl = value;
-					playlistItemCount = 0;
-					playlistCount++;
-				} else {
-					playlistItemCount = 0;
-				}
-			}
+		for (const song of formSongs) {
+			song.title = formData.get(`title-${song.id}`);
+			song.songUrl = formData.get(`songUrl-${song.id}`);
 		}
 
-		function getPlaylistInfo(iterator) {
-			formPlaylist.name = iterator.next().value[1];
-			formPlaylist.coverUrl = iterator.next().value[1];
-
-			return iterator;
-		}
-
-		// Compare the form results with the playlist from the database, if something changed only send the change to the database
-		for (let i = 0; i < formItems.length; i++) {
-			const formSong = formItems[i];
-			const playlistSong = playlist.Songs[i];
+		//Compare the form results with the playlist from the database, if something changed only send the change to the database
+		for (let i = 0; i < formSongs.length; i++) {
+			const formSong = formSongs[i];
+			const originalSong = originalPlaylist.Songs[i];
 
 			if (
-				formSong.title !== playlistSong.title ||
-				formSong.coverUrl !== playlistSong.coverUrl ||
-				formSong.songUrl !== playlistSong.songUrl
+				formSong.title !== originalSong.title ||
+				formSong.coverUrl !== originalSong.coverUrl ||
+				formSong.songUrl !== originalSong.songUrl
 			) {
 				formPlaylist.songs.push({
 					id: formSong.id,
-					...(formSong.title !== playlistSong.title && {
+					...(formSong.title !== originalSong.title && {
 						title: formSong.title,
 					}),
-					...(formSong.coverUrl !== playlistSong.coverUrl && {
+					...(formSong.coverUrl !== originalSong.coverUrl && {
 						coverUrl: formSong.coverUrl,
 					}),
-					...(formSong.songUrl !== playlistSong.songUrl && {
+					...(formSong.songUrl !== originalSong.songUrl && {
 						songUrl: formSong.songUrl,
 					}),
 				});
 			}
 		}
 
-		console.log(formPlaylist);
+		// const saveResult = await editPlaylistAction(formPlaylist);
 
-		const saveResult = await editPlaylistAction(formPlaylist);
+		toast.promise(editPlaylistAction(formPlaylist), {
+			loading: "Saving playlist...",
+			success: "Playlist saved!",
+			error: "Error saving playlist",
+		});
 	};
 
 	const toggleCollapse = (songId) => {
@@ -190,12 +163,12 @@ export default function EditPlaylist({ playlistId }) {
 		<div className="playlistEdit">
 			<form
 				action={(formData) => {
-					// submitEditPlaylist(formData);
-					toast.promise(submitEditPlaylist(formData), {
-						loading: "Saving playlist...",
-						success: "Playlist saved!",
-						error: "Error saving playlist",
-					});
+					submitEditPlaylist(formData);
+					// toast.promise(submitEditPlaylist(formData), {
+					// 	loading: "Saving playlist...",
+					// 	success: "Playlist saved!",
+					// 	error: "Error saving playlist",
+					// });
 				}}
 			>
 				<div className="row">
@@ -283,7 +256,10 @@ export default function EditPlaylist({ playlistId }) {
 														<input
 															type="text"
 															id={song.id}
-															name={song.id}
+															name={
+																"title-" +
+																song.id
+															}
 															defaultValue={
 																song.title
 															}
@@ -360,7 +336,10 @@ export default function EditPlaylist({ playlistId }) {
 														/>
 														<input
 															type="text"
-															name={song.id}
+															name={
+																"songUrl-" +
+																song.id
+															}
 															defaultValue={
 																song.songUrl
 															}
@@ -372,21 +351,96 @@ export default function EditPlaylist({ playlistId }) {
 															minLength={3}
 															placeholder="Soundcloud URL"
 														/>
-														<BsImage size={16} />
-														<input
-															type="text"
-															name={song.id}
-															defaultValue={
-																song.coverUrl
-															}
-															readOnly={
-																!collapseStates[
-																	song.id
-																]
-															}
-															minLength={3}
-															placeholder="Song cover URL"
-														/>
+														{/* <BsImage size={16} /> */}
+														<span></span>
+														<div>
+															<CldUploadWidget
+																uploadPreset="dpjhj6bt"
+																options={{
+																	maxFiles: 1,
+																	resourceType:
+																		"image",
+																	cloudName:
+																		"do67csxma",
+																	clientAllowedFormats:
+																		[
+																			"png",
+																			"webp",
+																			"jpeg",
+																			"jpg",
+																		],
+																	folder: "Imeardle",
+																	return_delete_token: true,
+																	maxFileSize: 10000000,
+																	cropping: true,
+																	croppingAspectRatio:
+																		300 /
+																		300,
+																	croppingValidateDimensions: true,
+																	showSkipCropButton: false,
+																	//reduce file size
+																}}
+																onError={(
+																	error
+																) => {
+																	console.log(
+																		error
+																	);
+																	messageUploadImageError();
+																}}
+																onUpload={(
+																	result
+																) => {
+																	const tempPlaylist =
+																		playlist;
+																	tempPlaylist.Songs.forEach(
+																		(
+																			tempSong
+																		) => {
+																			if (
+																				tempSong.id ===
+																				song.id
+																			) {
+																				tempSong.coverUrl =
+																					result.info.secure_url;
+																			}
+																		}
+																	);
+
+																	setPlaylist(
+																		tempPlaylist
+																	);
+
+																	messageUploadImageSuccess();
+																}}
+															>
+																{({ open }) => {
+																	const handleOnClick =
+																		(e) => {
+																			e.preventDefault();
+																			open();
+																		};
+																	return (
+																		<img
+																			src={
+																				song.coverUrl
+																			}
+																			onClick={
+																				handleOnClick
+																			}
+																			width={
+																				"100%"
+																			}
+																			style={{
+																				objectFit:
+																					"cover",
+																				cursor: "pointer",
+																			}}
+																		/>
+																	);
+																}}
+															</CldUploadWidget>
+														</div>
 													</div>
 												</Collapse>
 											</div>
