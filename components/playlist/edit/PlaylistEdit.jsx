@@ -30,7 +30,8 @@ export default function EditPlaylist({ playlistId }) {
 
 	const [showAddSongModal, setShowAddSongModal] = useState(false);
 
-	const [uploadedImage, setUploadedImage] = useState("");
+	const [newSongImage, setNewSongImage] = useState("");
+	const [newPlaylistImage, setNewPlaylistImage] = useState("");
 
 	const messageUploadImageError = () => toast.error("Error uploading image");
 	const messageUploadImageSuccess = () =>
@@ -61,6 +62,7 @@ export default function EditPlaylist({ playlistId }) {
 			console.log(playlistRes);
 			setPlaylist(playlistRes);
 			setOriginalPlaylist(JSON.parse(JSON.stringify(playlistRes)));
+			setNewPlaylistImage(playlistRes.coverUrl);
 		});
 	};
 
@@ -70,7 +72,7 @@ export default function EditPlaylist({ playlistId }) {
 	};
 
 	const submitAddSong = async (song) => {
-		if (uploadedImage.length > 0) {
+		if (newSongImage.length > 0) {
 			const title = song.get("title");
 			const songUrl = song.get("songUrl");
 
@@ -78,7 +80,7 @@ export default function EditPlaylist({ playlistId }) {
 				const result = await addSongAction({
 					title: title,
 					songUrl: songUrl,
-					coverUrl: uploadedImage,
+					coverUrl: newSongImage,
 					playlistId: playlist.id,
 				});
 
@@ -98,11 +100,15 @@ export default function EditPlaylist({ playlistId }) {
 	};
 
 	const submitEditPlaylist = async (formData) => {
+		if (newPlaylistImage.length <= 0)
+			throw new Error("No cover image provided");
+		console.log(newPlaylistImage);
+
 		const formSongs = playlist.Songs;
 		const formPlaylist = {
 			id: playlist.id,
 			name: formData.get("name"),
-			coverUrl: formData.get("coverUrl"),
+			coverUrl: newPlaylistImage,
 			songs: [],
 		};
 
@@ -136,13 +142,8 @@ export default function EditPlaylist({ playlistId }) {
 			}
 		}
 
-		// const saveResult = await editPlaylistAction(formPlaylist);
-
-		toast.promise(editPlaylistAction(formPlaylist), {
-			loading: "Saving playlist...",
-			success: "Playlist saved!",
-			error: "Error saving playlist",
-		});
+		const saveResult = await editPlaylistAction(formPlaylist);
+		console.log(formPlaylist);
 	};
 
 	const toggleCollapse = (songId) => {
@@ -163,18 +164,67 @@ export default function EditPlaylist({ playlistId }) {
 		<div className="playlistEdit">
 			<form
 				action={(formData) => {
-					submitEditPlaylist(formData);
-					// toast.promise(submitEditPlaylist(formData), {
-					// 	loading: "Saving playlist...",
-					// 	success: "Playlist saved!",
-					// 	error: "Error saving playlist",
-					// });
+					toast.promise(submitEditPlaylist(formData), {
+						loading: "Saving playlist...",
+						success: "Playlist saved!",
+						error: "Error saving playlist",
+					});
 				}}
 			>
 				<div className="row">
 					<div className="col-xl-4 col-lg-6 col-md-6 form-column">
 						<div className="form-container">
 							<h2>Edit playlist</h2>
+							<div className="form-item">
+								<CldUploadWidget
+									uploadPreset="dpjhj6bt"
+									options={{
+										maxFiles: 1,
+										resourceType: "image",
+										cloudName: "do67csxma",
+										clientAllowedFormats: [
+											"png",
+											"webp",
+											"jpeg",
+											"jpg",
+										],
+										folder: "Imeardle",
+										return_delete_token: true,
+										maxFileSize: 10000000,
+										cropping: true,
+										croppingAspectRatio: 300 / 300,
+										croppingValidateDimensions: true,
+										showSkipCropButton: false,
+									}}
+									onError={(error) => {
+										console.log(error);
+										messageUploadImageError();
+									}}
+									onUpload={(result) => {
+										setNewPlaylistImage(
+											result.info.secure_url
+										);
+										messageUploadImageSuccess();
+										console.log(result);
+									}}
+								>
+									{({ open }) => {
+										function handleOnClick(e) {
+											e.preventDefault();
+											open();
+										}
+										return (
+											<div className="form-item-img changeable-image-container">
+												<img
+													className="playlist-image"
+													src={playlist.coverUrl}
+													onClick={handleOnClick}
+												/>
+											</div>
+										);
+									}}
+								</CldUploadWidget>
+							</div>
 							<div className="form-item">
 								<label>
 									<span>Name:</span>
@@ -183,17 +233,6 @@ export default function EditPlaylist({ playlistId }) {
 										placeholder="Ex. Queen"
 										defaultValue={playlist.name}
 										name="name"
-									/>
-								</label>
-							</div>
-							<div className="form-item">
-								<label>
-									<span>Cover url:</span>
-									<input
-										type="text"
-										placeholder="Ex. https:i.imgur.com/GHkIb4B.jpg"
-										defaultValue={playlist.coverUrl}
-										name="coverUrl"
 									/>
 								</label>
 							</div>
@@ -378,7 +417,6 @@ export default function EditPlaylist({ playlistId }) {
 																		300,
 																	croppingValidateDimensions: true,
 																	showSkipCropButton: false,
-																	//reduce file size
 																}}
 																onError={(
 																	error
@@ -421,22 +459,24 @@ export default function EditPlaylist({ playlistId }) {
 																			open();
 																		};
 																	return (
-																		<img
-																			src={
-																				song.coverUrl
-																			}
-																			onClick={
-																				handleOnClick
-																			}
-																			width={
-																				"100%"
-																			}
-																			style={{
-																				objectFit:
-																					"cover",
-																				cursor: "pointer",
-																			}}
-																		/>
+																		<div className="changeable-image-container">
+																			<img
+																				src={
+																					song.coverUrl
+																				}
+																				onClick={
+																					handleOnClick
+																				}
+																				width={
+																					"100%"
+																				}
+																				style={{
+																					objectFit:
+																						"cover",
+																					cursor: "pointer",
+																				}}
+																			/>
+																		</div>
 																	);
 																}}
 															</CldUploadWidget>
@@ -496,15 +536,13 @@ export default function EditPlaylist({ playlistId }) {
 									croppingAspectRatio: 300 / 300,
 									croppingValidateDimensions: true,
 									showSkipCropButton: false,
-									//reduce file size
 								}}
 								onError={(error) => {
 									console.log(error);
 									messageUploadImageError();
 								}}
 								onUpload={(result) => {
-									setUploadedImage(result.info.secure_url);
-									// uploadImageError();
+									setNewSongImage(result.info.secure_url);
 									messageUploadImageSuccess();
 									console.log(result);
 								}}
@@ -525,9 +563,9 @@ export default function EditPlaylist({ playlistId }) {
 									);
 								}}
 							</CldUploadWidget>
-							{uploadedImage.length > 0 ? (
+							{newSongImage.length > 0 ? (
 								<CldImage
-									src={uploadedImage}
+									src={newSongImage}
 									width={300}
 									height={300}
 									style={{ objectFit: "cover" }}

@@ -7,12 +7,19 @@
         height: 80vh;
         
         .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             position: fixed;
-            width: fit-content;
+            width: min-content;
             padding: 20px 30px;
             background-color: lighten($primary, .7);
             box-shadow: 0 0 5px rgb(0 0 0 / 20%);
             border-radius: 10px;
+
+            h2 {
+                margin-bottom: 25px;
+            }
     
             button {
                 padding: 0.4rem 2rem;
@@ -21,6 +28,9 @@
     
             .form {
                 &-item {
+                    display: flex;
+                    justify-content: center;
+                    width: 100%;
                     margin-bottom: 20px;
         
                     span {
@@ -43,6 +53,16 @@
             
                         &:focus {
                             outline: none;
+                        }
+                    }
+
+                    &-img {
+                        width: 50%;
+                        border-radius: 50%;
+
+                        img {
+                            width: 100%;
+                            border-radius: 50%;
                         }
                     }
                 }
@@ -203,13 +223,11 @@
 
         > input[type=text] {
             width: 100%;
-            // background-color: #272728;
             background-color: lighten($primary, 5);
             margin-bottom: 10px;
             border-radius: 5px;
             color: #FFFFFF;
             border: none;
-            // border-bottom: 1px solid #FFFFFF;
     
             &:focus {
                 outline: none;
@@ -225,7 +243,7 @@
         
         button {
             width: 100%;
-            margin-bottom: 10px;
+            margin: 10px 0;
         }
 
         img {

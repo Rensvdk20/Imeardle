@@ -17,6 +17,8 @@ $xs: "only screen and (max-width : 0px)";
     src: local('Typold Regular'), url('../../public/fonts/Typold_Regular.woff') format('woff');
 }
 
+// ##### Default #####
+
 body {
     color: $white;
     background-color: $primary;
@@ -48,6 +50,35 @@ a {
     visibility: hidden;
     width: 10px !important;
     height: 10px !important;
+}
+
+.changeable-image-container {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        transition: opacity .2s ease-in-out;
+    }
+    
+    &:hover img {
+        opacity: .5;
+    }
+
+    &::after {
+        content: "\270F";
+        display: block;
+        position: absolute;
+        transform: rotate(45deg);
+        transition: opacity .2s ease-in-out;
+        scale: 4;
+        opacity: 0;
+    }
+
+    &:hover::after {
+        opacity: 1;
+    }
 }
 
 // Buttons
