@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import "./PlaylistOverview.scss";
 
 import { BsSearch } from "react-icons/bs";
+import Image from "next/image";
 
 function PlaylistOverview({ managerOverview }) {
 	const [playlists, setPlaylists] = useState([]);
@@ -59,7 +60,7 @@ function PlaylistOverview({ managerOverview }) {
 						className={hideSearch ? "hide" : "show"}
 					/>
 				</div>
-				<h2>My Playlists</h2>
+				<h2>Playlists</h2>
 				<div className="playlist-list">
 					<div className="row">
 						{playlists
@@ -83,9 +84,11 @@ function PlaylistOverview({ managerOverview }) {
 										<div className="item">
 											<div className="item-cover">
 												<div className="item-cover-overlay"></div>
-												<img
+												<Image
 													src={playlist.coverUrl}
 													alt="Playlist cover"
+													width={500}
+													height={250}
 												/>
 											</div>
 											<div className="item-name">

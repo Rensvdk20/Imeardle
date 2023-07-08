@@ -91,7 +91,7 @@ const ImeardlePlayer = (params) => {
 		if (params.playlistId == null) {
 			//No playlist selected
 			res = await fetch("/api/playlist/random", {
-				next: { revalidate: 10 },
+				next: { cache: "no-cache", revalidate: false },
 			});
 
 			playlist = await res.json();
@@ -196,7 +196,7 @@ const ImeardlePlayer = (params) => {
 		setModalMessageState("Congrats!");
 
 		// View the song
-		openModal();
+		openModal(true);
 
 		setGuessedState(true);
 
@@ -217,6 +217,7 @@ const ImeardlePlayer = (params) => {
 
 	const handleIncorrectGuess = () => {
 		setUserInput("");
+
 		setGuessesLeft(
 			guessStates.length - guessStates.indexOf(guessState) - 1
 		);
@@ -224,8 +225,9 @@ const ImeardlePlayer = (params) => {
 			increaseGuessState();
 		} else {
 			// No more guesses left
+			setGuessedState(true);
 			setModalMessageState("Unlucky, try again!");
-			openModal();
+			openModal(false);
 		}
 	};
 
@@ -369,11 +371,13 @@ const ImeardlePlayer = (params) => {
 	const [show, setShow] = useState(false);
 
 	const closeModal = () => setShow(false);
-	const openModal = () => {
+	const openModal = (isCorrect) => {
 		setShow(true);
-		setTimeout(() => {
-			fire();
-		}, 500);
+		if (isCorrect) {
+			setTimeout(() => {
+				fire();
+			}, 500);
+		}
 	};
 
 	return (

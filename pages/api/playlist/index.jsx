@@ -3,8 +3,31 @@ import prisma from "../../../prisma/client";
 export default async function handler(req, res) {
 	const { method } = req;
 
+	// ##### Input check interceptor #####
+	if (method === "POST") {
+		// Title should be at least 3 characters long
+		if (req.body.name.length < 3) {
+			return res
+				.status(400)
+				.json({ error: "The playlist title is too short" });
+		}
+
+		//Check if the coverurl is from the url https://res.cloudinary.com/do67csxma/image/upload/
+		if (
+			!req.body.coverUrl.includes(
+				"https://res.cloudinary.com/do67csxma/image/upload/"
+			)
+		) {
+			return res
+				.status(400)
+				.json({ error: "The coverUrl source is invalid" });
+		}
+	}
+
+	// ##### API Endpoints #####
+
 	switch (method) {
-		// Get all
+		// Get all playlists
 		case "GET":
 			try {
 				const playlist = await prisma.playlist.findMany();

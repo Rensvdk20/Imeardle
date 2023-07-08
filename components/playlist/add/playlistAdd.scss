@@ -2,6 +2,9 @@
 
 .playlistAdd {
     form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         width: fit-content;
         padding: 20px 30px;
         background-color: lighten($primary, 2);
@@ -12,7 +15,14 @@
             width: 100%;
         }
 
+        h2 {
+            margin-bottom: 25px;
+        }
+
         .form-item {
+            display: flex;
+            justify-content: center;
+            width: 100%;
             margin-bottom: 20px;
 
             span {
@@ -35,6 +45,28 @@
     
                 &:focus {
                     outline: none;
+                }
+            }
+
+            &-img {
+                position: relative;
+                height: 150px;
+                width: 50%;
+                border-radius: 50%;
+
+                img {
+                    width: 100%;
+                    border-radius: 50%;
+                }
+            }
+        }
+    }
+
+    @media #{$xl} {
+        form {
+            .form-item {
+                &-img {
+                    width: 150px;
                 }
             }
         }

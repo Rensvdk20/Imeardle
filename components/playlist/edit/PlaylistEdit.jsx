@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
 	editPlaylistAction,
 	addSongAction,
@@ -8,7 +8,6 @@ import {
 } from "../actions.jsx";
 
 import Collapse from "react-bootstrap/Collapse";
-import Fade from "react-bootstrap/Fade";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
@@ -21,6 +20,7 @@ import { RxCross1 } from "react-icons/rx";
 import toast, { Toaster } from "react-hot-toast";
 
 import { CldImage, CldUploadWidget } from "next-cloudinary";
+import Image from "next/image.js";
 
 export default function EditPlaylist({ playlistId }) {
 	const [playlist, setPlaylist] = useState({});
@@ -31,7 +31,10 @@ export default function EditPlaylist({ playlistId }) {
 	const [showAddSongModal, setShowAddSongModal] = useState(false);
 
 	const [newSongImage, setNewSongImage] = useState("");
-	const [newPlaylistImage, setNewPlaylistImage] = useState("");
+	const [newPlaylistImage, setNewPlaylistImage] =
+		useState("/img/skeleton.gif");
+
+	const uploadWidgetRef = useRef(null);
 
 	const messageUploadImageError = () => toast.error("Error uploading image");
 	const messageUploadImageSuccess = () =>
@@ -99,10 +102,15 @@ export default function EditPlaylist({ playlistId }) {
 		}
 	};
 
-	const submitEditPlaylist = async (formData) => {
-		if (newPlaylistImage.length <= 0)
-			throw new Error("No cover image provided");
-		console.log(newPlaylistImage);
+	const editPlaylist = async (formData) => {
+		toast.loading("Editing playlist...", {
+			id: "editPlaylist",
+		});
+
+		if (!newPlaylistImage.includes("https://res.cloudinary.com/do67csxma/"))
+			return toast.error("No image selected", {
+				id: "editPlaylist",
+			});
 
 		const formSongs = playlist.Songs;
 		const formPlaylist = {
@@ -143,6 +151,18 @@ export default function EditPlaylist({ playlistId }) {
 		}
 
 		const saveResult = await editPlaylistAction(formPlaylist);
+
+		if (saveResult.status !== 200) {
+			return toast.error(saveResult.message, {
+				id: "editPlaylist",
+			});
+		}
+
+		if (saveResult)
+			toast.success("Playlist edited successfully!", {
+				id: "editPlaylist",
+			});
+
 		console.log(formPlaylist);
 	};
 
@@ -164,11 +184,7 @@ export default function EditPlaylist({ playlistId }) {
 		<div className="playlistEdit">
 			<form
 				action={(formData) => {
-					toast.promise(submitEditPlaylist(formData), {
-						loading: "Saving playlist...",
-						success: "Playlist saved!",
-						error: "Error saving playlist",
-					});
+					editPlaylist(formData);
 				}}
 			>
 				<div className="row">
@@ -190,7 +206,7 @@ export default function EditPlaylist({ playlistId }) {
 										],
 										folder: "Imeardle",
 										return_delete_token: true,
-										maxFileSize: 10000000,
+										maxFileSize: 5000000,
 										cropping: true,
 										croppingAspectRatio: 300 / 300,
 										croppingValidateDimensions: true,
@@ -215,10 +231,19 @@ export default function EditPlaylist({ playlistId }) {
 										}
 										return (
 											<div className="form-item-img changeable-image-container">
-												<img
+												<Image
 													className="playlist-image"
-													src={playlist.coverUrl}
+													fill={true}
+													src={newPlaylistImage}
+													priority
+													sizes="200px"
 													onClick={handleOnClick}
+													onError={() => {
+														setNewPlaylistImage(
+															"/img/placeholder.jpeg"
+														);
+													}}
+													alt="Playlist cover"
 												/>
 											</div>
 										);
@@ -233,6 +258,8 @@ export default function EditPlaylist({ playlistId }) {
 										placeholder="Ex. Queen"
 										defaultValue={playlist.name}
 										name="name"
+										required
+										minLength={3}
 									/>
 								</label>
 							</div>
@@ -392,94 +419,31 @@ export default function EditPlaylist({ playlistId }) {
 														/>
 														{/* <BsImage size={16} /> */}
 														<span></span>
-														<div>
-															<CldUploadWidget
-																uploadPreset="dpjhj6bt"
-																options={{
-																	maxFiles: 1,
-																	resourceType:
-																		"image",
-																	cloudName:
-																		"do67csxma",
-																	clientAllowedFormats:
-																		[
-																			"png",
-																			"webp",
-																			"jpeg",
-																			"jpg",
-																		],
-																	folder: "Imeardle",
-																	return_delete_token: true,
-																	maxFileSize: 10000000,
-																	cropping: true,
-																	croppingAspectRatio:
-																		300 /
-																		300,
-																	croppingValidateDimensions: true,
-																	showSkipCropButton: false,
-																}}
-																onError={(
-																	error
-																) => {
-																	console.log(
-																		error
-																	);
-																	messageUploadImageError();
-																}}
-																onUpload={(
-																	result
-																) => {
-																	const tempPlaylist =
-																		playlist;
-																	tempPlaylist.Songs.forEach(
-																		(
-																			tempSong
-																		) => {
-																			if (
-																				tempSong.id ===
-																				song.id
-																			) {
-																				tempSong.coverUrl =
-																					result.info.secure_url;
-																			}
-																		}
-																	);
-
-																	setPlaylist(
-																		tempPlaylist
-																	);
-
-																	messageUploadImageSuccess();
-																}}
-															>
-																{({ open }) => {
-																	const handleOnClick =
-																		(e) => {
-																			e.preventDefault();
-																			open();
-																		};
-																	return (
-																		<div className="changeable-image-container">
-																			<img
-																				src={
-																					song.coverUrl
-																				}
-																				onClick={
-																					handleOnClick
-																				}
-																				width={
-																					"100%"
-																				}
-																				style={{
-																					objectFit:
-																						"cover",
-																					cursor: "pointer",
-																				}}
-																			/>
-																		</div>
-																	);
-																}}
-															</CldUploadWidget>
+														<div className="song-upload">
+															<div className="changeable-image-container">
+																<CldImage
+																	src={
+																		song.coverUrl
+																	}
+																	onClick={() => {
+																		uploadWidgetRef.current.setAttribute(
+																			"data-song-id",
+																			song.id
+																		);
+																		uploadWidgetRef.current.click();
+																	}}
+																	fill={true}
+																	alt="Song cover"
+																	sizes="400px"
+																	style={{
+																		objectFit:
+																			"cover",
+																		cursor: "pointer",
+																	}}
+																	f_auto
+																	loading="eager"
+																/>
+															</div>
 														</div>
 													</div>
 												</Collapse>
@@ -531,7 +495,7 @@ export default function EditPlaylist({ playlistId }) {
 									],
 									folder: "Imeardle",
 									return_delete_token: true,
-									maxFileSize: 10000000,
+									maxFileSize: 5000000,
 									cropping: true,
 									croppingAspectRatio: 300 / 300,
 									croppingValidateDimensions: true,
@@ -596,6 +560,55 @@ export default function EditPlaylist({ playlistId }) {
 					className: "toaster",
 				}}
 			/>
+			<CldUploadWidget
+				className="uploadWidgetTest"
+				uploadPreset="dpjhj6bt"
+				options={{
+					maxFiles: 1,
+					resourceType: "image",
+					cloudName: "do67csxma",
+					clientAllowedFormats: ["png", "webp", "jpeg", "jpg"],
+					folder: "Imeardle",
+					return_delete_token: true,
+					maxFileSize: 5000000,
+					cropping: true,
+					croppingAspectRatio: 300 / 300,
+					croppingValidateDimensions: true,
+					showSkipCropButton: false,
+				}}
+				onError={(error) => {
+					console.log(error);
+					messageUploadImageError();
+				}}
+				onUpload={(result) => {
+					const tempPlaylist = JSON.parse(JSON.stringify(playlist));
+					const songId =
+						uploadWidgetRef.current.getAttribute("data-song-id");
+
+					tempPlaylist.Songs.forEach((tempSong) => {
+						if (tempSong.id === songId) {
+							tempSong.coverUrl = result.info.secure_url;
+						}
+					});
+
+					setPlaylist(tempPlaylist);
+					messageUploadImageSuccess();
+					console.log(result);
+				}}
+			>
+				{({ open }) => {
+					const handleOnClick = (e) => {
+						e.preventDefault();
+						open();
+					};
+					return (
+						<div
+							ref={uploadWidgetRef}
+							onClick={handleOnClick}
+						></div>
+					);
+				}}
+			</CldUploadWidget>
 		</div>
 	);
 }

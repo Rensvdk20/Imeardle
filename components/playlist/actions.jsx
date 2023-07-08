@@ -4,8 +4,29 @@ import { revalidateTag } from "next/cache";
 
 // ##### Playlist Actions #####
 
+export async function addPlaylistAction(playlist) {
+	const res = await fetch(`${process.env.WEBSITE_URL}/api/playlist/`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			name: playlist.name,
+			coverUrl: playlist.coverUrl,
+		}),
+	});
+
+	if (res.ok) {
+		revalidateTag(["playlists"]);
+	}
+
+	return {
+		status: res.status,
+		message: (await res.json()).error,
+	};
+}
+
 export async function editPlaylistAction(editedPlaylist) {
-	console.log(editedPlaylist);
 	const res = await fetch(
 		`${process.env.WEBSITE_URL}/api/playlist/${editedPlaylist.id}`,
 		{
@@ -30,16 +51,17 @@ export async function editPlaylistAction(editedPlaylist) {
 
 	if (res.ok) {
 		revalidateTag("playlists");
-		return true;
 	}
 
-	return false;
+	return {
+		status: res.status,
+		message: (await res.json()).error,
+	};
 }
 
 // ##### Song Actions #####
 
 export async function addSongAction(song) {
-	console.log(song);
 	const res = await fetch(`${process.env.WEBSITE_URL}/api/song`, {
 		method: "POST",
 		headers: {
@@ -60,7 +82,10 @@ export async function addSongAction(song) {
 
 	if (res.ok) {
 		revalidateTag("playlists");
+		return true;
 	}
+
+	return false;
 }
 
 export async function deleteSongAction(songId) {

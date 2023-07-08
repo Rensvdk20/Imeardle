@@ -4,7 +4,7 @@ export default async function handler(req, res) {
 	const { method } = req;
 
 	switch (method) {
-		// Get all
+		// Get a random playlist
 		case "GET":
 			try {
 				const playlist = await prisma.playlist.findMany({

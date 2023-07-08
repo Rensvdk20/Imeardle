@@ -57,6 +57,8 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    height: 100%;
 
     img {
         transition: opacity .2s ease-in-out;
@@ -70,6 +72,7 @@ a {
         content: "\270F";
         display: block;
         position: absolute;
+        pointer-events: none;
         transform: rotate(45deg);
         transition: opacity .2s ease-in-out;
         scale: 4;

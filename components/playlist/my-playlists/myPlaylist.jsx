@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import "../overview/PlaylistOverview.scss";
+import Image from "next/image";
 
 async function getPlaylists() {
 	"use server";
@@ -11,8 +12,6 @@ async function getPlaylists() {
 			revalidate: 10,
 		},
 	});
-
-	console.log(res);
 
 	return res.json();
 }
@@ -35,9 +34,11 @@ async function MyPlaylist() {
 									<div className="item">
 										<div className="item-cover">
 											<div className="item-cover-overlay"></div>
-											<img
+											<Image
 												src={playlist.coverUrl}
 												alt="Playlist cover"
+												width={500}
+												height={250}
 											/>
 										</div>
 										<div className="item-name">
