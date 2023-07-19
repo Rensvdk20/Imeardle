@@ -31,6 +31,16 @@ function PlaylistOverview({ managerOverview }) {
 		loadAllPlaylists();
 	}, []);
 
+	const filteredPlaylists = playlists.filter((playlist) => {
+		if (searchInput === "") {
+			return playlist;
+		} else if (
+			playlist.name.toLowerCase().includes(searchInput.toLowerCase())
+		) {
+			return playlist;
+		}
+	});
+
 	const showSearch = () => {
 		setHideSearch(!hideSearch);
 		searchInputRef.current.style.visibility = "visible";
@@ -63,19 +73,11 @@ function PlaylistOverview({ managerOverview }) {
 				<h2>Playlists</h2>
 				<div className="playlist-list">
 					<div className="row">
-						{playlists
-							.filter((playlist) => {
-								if (searchInput === "") {
-									return playlist;
-								} else if (
-									playlist.name
-										.toLowerCase()
-										.includes(searchInput.toLowerCase())
-								) {
-									return playlist;
-								}
-							})
-							.map((playlist) => (
+						{filteredPlaylists.length === 0 &&
+						playlists.length !== 0 ? (
+							<div>No playlists found</div>
+						) : (
+							filteredPlaylists.map((playlist) => (
 								<div
 									className="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3"
 									key={playlist.id}
@@ -97,7 +99,8 @@ function PlaylistOverview({ managerOverview }) {
 										</div>
 									</Link>
 								</div>
-							))}
+							))
+						)}
 					</div>
 				</div>
 			</div>

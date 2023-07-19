@@ -59,6 +59,24 @@ export async function editPlaylistAction(editedPlaylist) {
 	};
 }
 
+export async function deletePlaylistAction(playlistId) {
+	const res = await fetch(
+		`${process.env.WEBSITE_URL}/api/playlist/${playlistId}`,
+		{
+			method: "DELETE",
+		}
+	);
+
+	if (res.ok) {
+		revalidateTag("playlists");
+	}
+
+	return {
+		status: res.status,
+		message: (await res.json()).error,
+	};
+}
+
 // ##### Song Actions #####
 
 export async function addSongAction(song) {

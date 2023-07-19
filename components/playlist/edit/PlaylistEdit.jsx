@@ -3,9 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import {
 	editPlaylistAction,
+	deletePlaylistAction,
 	addSongAction,
 	deleteSongAction,
 } from "../actions.jsx";
+
+import { useRouter } from "next/navigation";
 
 import Collapse from "react-bootstrap/Collapse";
 import Modal from "react-bootstrap/Modal";
@@ -23,12 +26,16 @@ import { CldImage, CldUploadWidget } from "next-cloudinary";
 import Image from "next/image.js";
 
 export default function EditPlaylist({ playlistId }) {
+	const router = useRouter();
+
 	const [playlist, setPlaylist] = useState({});
 	const [originalPlaylist, setOriginalPlaylist] = useState({});
 	const [collapseStates, setCollapseStates] = useState({});
 	const [deleteOptionStates, setDeleteOptionStates] = useState({});
 
 	const [showAddSongModal, setShowAddSongModal] = useState(false);
+	const [showDeletePlaylistModal, setShowDeletePlaylistModal] =
+		useState(false);
 
 	const [newSongImage, setNewSongImage] = useState("");
 	const [newPlaylistImage, setNewPlaylistImage] =
@@ -166,6 +173,29 @@ export default function EditPlaylist({ playlistId }) {
 		console.log(formPlaylist);
 	};
 
+	const deletePlaylist = async () => {
+		toast.loading("Deleting playlist...", {
+			id: "deletePlaylist",
+		});
+
+		const result = await deletePlaylistAction(playlist.id);
+
+		if (result.status !== 200) {
+			return toast.error(result.message, {
+				id: "deletePlaylist",
+			});
+		}
+
+		if (result) {
+			toast.success("Playlist deleted successfully!", {
+				id: "deletePlaylist",
+			});
+			router.push("/manager");
+		}
+
+		console.log(result);
+	};
+
 	const toggleCollapse = (songId) => {
 		setCollapseStates((prevState) => ({
 			...prevState,
@@ -273,16 +303,26 @@ export default function EditPlaylist({ playlistId }) {
 						<div className="songs">
 							<div className="row">
 								<div className="col-12">
-									<div className="add-song">
+									<div className="song-options">
 										<button
 											type="button"
-											className="btn btn-primary"
-											onClick={() => {
-												setShowAddSongModal(true);
-											}}
+											className="btn btn-primary song-options-add"
+											onClick={() =>
+												setShowAddSongModal(true)
+											}
 										>
 											<AiOutlinePlus size={20} />
 											&nbsp;Add song
+										</button>
+										<button
+											type="button"
+											className="btn btn-primary song-options-delete"
+											onClick={() =>
+												setShowDeletePlaylistModal(true)
+											}
+										>
+											<AiFillDelete size={22} />
+											&nbsp;Delete Playlist
 										</button>
 										<hr />
 									</div>
@@ -455,7 +495,13 @@ export default function EditPlaylist({ playlistId }) {
 					</div>
 				</div>
 			</form>
-			<Modal show={showAddSongModal} centered>
+			<Modal
+				show={showAddSongModal}
+				onHide={() => {
+					setShowAddSongModal(false);
+				}}
+				centered
+			>
 				<form
 					action={(songData) => {
 						submitAddSong(songData);
@@ -553,6 +599,43 @@ export default function EditPlaylist({ playlistId }) {
 						</Button>
 					</Modal.Footer>
 				</form>
+			</Modal>
+			<Modal
+				show={showDeletePlaylistModal}
+				onHide={() => setShowDeletePlaylistModal(false)}
+				centered
+			>
+				<Modal.Body className="modal-delete-song">
+					<h5>Are you sure?</h5>
+					<div className="delete-icon-container">
+						<AiFillDelete size={25} />
+					</div>
+					<h5>{playlist.name}</h5>
+					<div>
+						By deleting this playlist,{" "}
+						<u>
+							{playlist.Songs ? playlist.Songs.length : "0"} songs
+						</u>{" "}
+						will also be deleted.
+					</div>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button
+						variant="primary"
+						onClick={() => setShowDeletePlaylistModal(false)}
+					>
+						Cancel
+					</Button>
+					<Button
+						variant="secondary"
+						onClick={() => {
+							setShowDeletePlaylistModal(false);
+							deletePlaylist();
+						}}
+					>
+						Delete Playlist
+					</Button>
+				</Modal.Footer>
 			</Modal>
 			<Toaster
 				position="top-right"
