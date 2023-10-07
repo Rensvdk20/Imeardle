@@ -1,9 +1,16 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import { redirect } from "next/navigation";
+
 import PlaylistAdd from "../../components/playlist/add/PlaylistAdd";
 import MyPlaylist from "../../components/playlist/my-playlists/myPlaylist";
 
 import "./page.scss";
 
-function ManagerPage() {
+async function ManagerPage() {
+	const session = await getServerSession(authOptions);
+	if (!session) redirect("/api/auth/signin?callbackUrl=/manager");
+
 	return (
 		<div className="manager">
 			<div className="container-fluid">

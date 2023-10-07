@@ -1,13 +1,22 @@
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../pages/api/auth/[...nextauth]";
+
 import Link from "next/link";
+import Login from "../components/auth/Login";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../shared/styles/global.scss";
+import { Fragment } from "react";
+import Logout from "../components/auth/Logout";
+import Provider from "../components/auth/Provider";
 
 export const metadata = {
 	title: "Imeardle",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+	const session = await getServerSession(authOptions);
+
 	return (
 		<html lang="en">
 			<body>
@@ -52,17 +61,31 @@ export default function RootLayout({ children }) {
 								</li>
 							</ul>
 
-							<ul className="navbar-nav nav-manager">
-								<li className="nav-item">
-									<Link className="nav-link" href="/manager">
-										My playlists
-									</Link>
-								</li>
+							<ul className="navbar-nav nav-right">
+								{session && session.user ? (
+									<Fragment>
+										<li className="nav-item">
+											<Link
+												className="nav-link"
+												href="/manager"
+											>
+												My playlists
+											</Link>
+										</li>
+										<li className="nav-item">
+											<Logout />
+										</li>
+									</Fragment>
+								) : (
+									<li className="nav-item">
+										<Login />
+									</li>
+								)}
 							</ul>
 						</div>
 					</div>
 				</nav>
-				{children}
+				<Provider>{children}</Provider>
 			</body>
 		</html>
 	);

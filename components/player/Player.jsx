@@ -9,6 +9,7 @@ function Player({
 	currentSongUrl,
 	volume,
 	handleProgress,
+	onError,
 }) {
 	return (
 		<Fragment>
@@ -19,6 +20,7 @@ function Player({
 				url={currentSongUrl}
 				volume={volume}
 				onProgress={handleProgress}
+				onError={onError}
 			/>
 		</Fragment>
 	);

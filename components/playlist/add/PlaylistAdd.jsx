@@ -115,8 +115,6 @@ function PlaylistAdd() {
 							placeholder="Ex. Queen"
 							name="name"
 							id="name"
-							required
-							minLength={3}
 						/>
 					</label>
 				</div>

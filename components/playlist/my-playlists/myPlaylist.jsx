@@ -1,23 +1,22 @@
-import Link from "next/link";
+"use client";
 
-import "../overview/PlaylistOverview.scss";
+import Link from "next/link";
 import Image from "next/image";
 
-async function getPlaylists() {
-	"use server";
+import "../overview/PlaylistOverview.scss";
+import { getMyPlaylistsAction } from "../actions";
+import { useState, useEffect } from "react";
 
-	const res = await fetch(`${process.env.WEBSITE_URL}/api/playlist`, {
-		next: {
-			tags: ["playlists"],
-			revalidate: 10,
-		},
-	});
+function MyPlaylist() {
+	const [playlists, setPlaylists] = useState([]);
 
-	return res.json();
-}
+	const loadAllPlaylists = async () => {
+		setPlaylists(await getMyPlaylistsAction());
+	};
 
-async function MyPlaylist() {
-	const playlists = await getPlaylists();
+	useEffect(() => {
+		loadAllPlaylists();
+	}, []);
 
 	return (
 		<div className="playlistOverview">
@@ -25,29 +24,36 @@ async function MyPlaylist() {
 				<h2>My Playlists</h2>
 				<div className="playlist-list">
 					<div className="row">
-						{playlists.map((playlist) => (
-							<div
-								className="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3"
-								key={playlist.id}
-							>
-								<Link href={`/manager/playlist/${playlist.id}`}>
-									<div className="item">
-										<div className="item-cover">
-											<div className="item-cover-overlay"></div>
-											<Image
-												src={playlist.coverUrl}
-												alt="Playlist cover"
-												width={500}
-												height={250}
-											/>
+						{playlists.status != 200 &&
+						playlists.data !== undefined ? (
+							<div>You don't have any playlists yet</div>
+						) : (
+							playlists.data?.map((playlist) => (
+								<div
+									className="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3"
+									key={playlist.id}
+								>
+									<Link
+										href={`/manager/playlist/${playlist.id}`}
+									>
+										<div className="item">
+											<div className="item-cover">
+												<div className="item-cover-overlay"></div>
+												<Image
+													src={playlist.coverUrl}
+													alt="Playlist cover"
+													width={500}
+													height={250}
+												/>
+											</div>
+											<div className="item-name">
+												{playlist.name}
+											</div>
 										</div>
-										<div className="item-name">
-											{playlist.name}
-										</div>
-									</div>
-								</Link>
-							</div>
-						))}
+									</Link>
+								</div>
+							))
+						)}
 					</div>
 				</div>
 			</div>

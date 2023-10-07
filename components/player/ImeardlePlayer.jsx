@@ -10,18 +10,23 @@ import {
 	BsFillSkipForwardFill,
 } from "react-icons/bs";
 
+import { getPlaylistAction } from "../playlist/actions";
+
 import ReactCanvasConfetti from "react-canvas-confetti";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
+import toast, { Toaster } from "react-hot-toast";
+
 import "./imeardlePlayer.scss";
 
 import dynamic from "next/dynamic";
+import { getRandomPlaylistAction } from "../playlist/actions";
 const Player = dynamic(() => import("../../components/player/Player"), {
 	ssr: false,
 });
 
-let songs = [];
+let playlistSongs = [];
 
 const state = {
 	playing: false,
@@ -74,7 +79,7 @@ const ImeardlePlayer = (params) => {
 
 	useEffect(() => {
 		//Get all songs
-		loadAllSongs();
+        loadPlaylist();
 
 		document.addEventListener("keydown", function (e) {
 			if (e.keyCode === "179") {
@@ -83,53 +88,41 @@ const ImeardlePlayer = (params) => {
 		});
 	}, []);
 
-	//Load all the songs async from the database
-	const loadAllSongs = async () => {
-		let res;
-		let playlist;
-		console.log(params.playlistId);
-		if (params.playlistId == null) {
-			//No playlist selected
-			res = await fetch("/api/playlist/random", {
-				next: { cache: "no-cache", revalidate: false },
-			});
+    // Load the playlist async from the database
+    const loadPlaylist = async () => {
+        let playlist;
 
-			playlist = await res.json();
-			setCurrentPlaylist("Random");
-		} else {
-			//Playlist selected
-			res = await fetch("/api/playlist/" + params.playlistId, {
-				next: { revalidate: 10 },
-			});
-
-			if (res.status != 404) {
-				playlist = await res.json();
-				setCurrentPlaylist(playlist.name);
-			} else {
-				//Playlist not found
-				res = await fetch("/api/playlist/random", {
-					next: { revalidate: 10 },
-				});
-
-				playlist = await res.json();
-				setCurrentPlaylist("Not found, playing random");
+        if(params.playlistId === null) {
+            //No playlist selected
+            playlist = await getRandomPlaylistAction();
+			if (playlist.status === 200) {
+                setCurrentPlaylist("Random");
+                playlistSongs = playlist.data.Songs;
 			}
-		}
+        } else {
+            //Playlist selected
+            playlist = await getPlaylistAction(params.playlistId, true);
+            console.log(playlist);
+            if (playlist.status === 200) {
+                setCurrentPlaylist(playlist.data.name)
+                playlistSongs = playlist.data.Songs;
+            }
+        }
 
-		console.log(playlist);
+        if(playlist.status === 404) {
+            //Playlist not found
+            toast.error("Playlist not found");
+            return setCurrentPlaylist("Playlist not found");
+        }
 
-		songs = playlist.Songs;
+        randomizeSong();
 
-		// Randomize a song at the start
-		randomizeSong();
-
-		//Pause the player after the first song has been loaded
-		setPlayerState({
-			...state,
-			playing: false,
-			loaded: true,
-		});
-	};
+        setPlayerState({
+            ...state,
+            playing: false,
+            loaded: true,
+        });
+    }
 
 	// Randomize a song from the given songs array
 	const randomizeSong = (play = true) => {
@@ -153,7 +146,7 @@ const ImeardlePlayer = (params) => {
 			handlePlay();
 		}
 
-		const randomSong = songs[Math.floor(Math.random() * songs.length)];
+		const randomSong = playlistSongs[Math.floor(Math.random() * playlistSongs.length)];
 		setCurrentSong(randomSong);
 		console.log(randomSong);
 	};
@@ -164,7 +157,7 @@ const ImeardlePlayer = (params) => {
 		setUserInput(lowerCaseInput);
 	};
 
-	const filteredSongs = songs
+	const filteredSongs = playlistSongs ? playlistSongs
 		.filter((song) => {
 			if (userInput.input === "") {
 				return song;
@@ -172,7 +165,7 @@ const ImeardlePlayer = (params) => {
 				return song.title.toLowerCase().includes(userInput);
 			}
 		})
-		.slice(0, 5);
+		.slice(0, 5) : [];
 
 	const handleGuessOnClick = (e) => {
 		handleGuess(e.target.getAttribute("data-title"));
@@ -208,7 +201,6 @@ const ImeardlePlayer = (params) => {
 		handleStartFromBeginning();
 
 		//Make the song fully play
-		// setGuessState(guessStates[guessStates.length - 1]);
 		setGuessState(29);
 
 		// Play the song
@@ -315,7 +307,7 @@ const ImeardlePlayer = (params) => {
 		playerRef?.current?.seekTo(0);
 	};
 
-	// Game functions
+	// ##### Player functions #####
 
 	const increaseGuessState = () => {
 		handleStartFromBeginning();
@@ -323,6 +315,7 @@ const ImeardlePlayer = (params) => {
 	};
 
 	// ##### Confetti #####
+
 	const refAnimationInstance = useRef(null);
 
 	const getInstance = useCallback((instance) => {
@@ -465,7 +458,7 @@ const ImeardlePlayer = (params) => {
 									onKeyDown={handleDropdownArrowKeys}
 									placeholder={
 										guessed
-											? "Randomize a new song"
+											? "Randomize a new song!"
 											: "Guess the song..."
 									}
 									disabled={guessed ? true : false}
@@ -501,6 +494,13 @@ const ImeardlePlayer = (params) => {
 						currentSongUrl={currentSong ? currentSong.songUrl : ""}
 						volume={volume}
 						handleProgress={handleProgress}
+						onError={() => {
+							toast.success("Skipped an invalid song", {
+								duration: 3000,
+								id: "invalid-song-url",
+							});
+							randomizeSong();
+						}}
 					/>
 
 					<Modal show={show} onHide={closeModal} centered>
@@ -538,6 +538,12 @@ const ImeardlePlayer = (params) => {
 					<BsGithub size={20} id="github" />
 				</a>
 			</div>
+			<Toaster
+				position="top-right"
+				toastOptions={{
+					className: "toaster",
+				}}
+			/>
 		</div>
 	);
 };

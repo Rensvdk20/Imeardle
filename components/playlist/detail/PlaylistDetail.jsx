@@ -1,19 +1,23 @@
+"use client";
+
 import Link from "next/link";
+import { getPlaylistAction } from "../actions";
+import { useState, useEffect, Fragment } from "react";
 
-async function getPlaylist(id) {
-	const res = await fetch(`${process.env.WEBSITE_URL}/api/playlist/${id}`, {
-		next: { revalidate: 10 },
-	});
+function PlaylistDetail({ playlistId }) {
+	const [playlist, setPlaylist] = useState([]);
 
-	return res.json();
-}
+	const loadAllPlaylists = async () => {
+		setPlaylist(await getPlaylistAction(playlistId, true));
+	};
 
-async function PlaylistDetail({ playlistId }) {
-	const playlist = await getPlaylist(playlistId);
+	useEffect(() => {
+		loadAllPlaylists();
+	}, []);
 
 	return (
 		<div className="playlistDetail">
-			{playlist.Songs.length !== 0 ? (
+			{playlist.data?.Songs && playlist.data?.Songs.length !== 0 ? (
 				<button
 					className="btn playlistDetail-select"
 					id="selectPlaylistDesktop"
@@ -31,38 +35,48 @@ async function PlaylistDetail({ playlistId }) {
 			) : (
 				""
 			)}
-			<div className="playlist">
-				<img src={playlist.coverUrl} alt={playlist.name} />
-				<h1>{playlist.name}</h1>
-				{playlist.Songs.length !== 0 ? (
-					<button className="btn" id="selectPlaylistMobile">
-						<Link
-							href={{
-								pathname: "/",
-								query: { playlistId },
-							}}
-							prefetch={false}
-						>
-							Use this playlist
-						</Link>
-					</button>
-				) : (
-					""
-				)}
-			</div>
-			<div className="songs">
-				<div className="row">
-					{playlist.Songs &&
-						playlist.Songs.map((song) => (
-							<div
-								className="col-12 col-lg-3 col-md-4 col-sm-6"
-								key={song.id}
-							>
-								<div className="song">{song.title}</div>
-							</div>
-						))}
-				</div>
-			</div>
+			{playlist.status != 200 ? (
+				<div className="error">{playlist.message}</div>
+			) : (
+				<Fragment>
+					<div className="playlist">
+						<img
+							src={playlist.data.coverUrl}
+							alt={playlist.data.name}
+						/>
+						<h1>{playlist.data.name}</h1>
+						{playlist.data.Songs &&
+						playlist.data.Songs?.length !== 0 ? (
+							<button className="btn" id="selectPlaylistMobile">
+								<Link
+									href={{
+										pathname: "/",
+										query: { playlistId },
+									}}
+									prefetch={false}
+								>
+									Use this playlist
+								</Link>
+							</button>
+						) : (
+							""
+						)}
+					</div>
+					<div className="songs">
+						<div className="row">
+							{playlist.data.Songs &&
+								playlist.data.Songs.map((song) => (
+									<div
+										className="col-12 col-lg-3 col-md-4 col-sm-6"
+										key={song.id}
+									>
+										<div className="song">{song.title}</div>
+									</div>
+								))}
+						</div>
+					</div>
+				</Fragment>
+			)}
 		</div>
 	);
 }

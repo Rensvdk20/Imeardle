@@ -7,8 +7,9 @@ import "./PlaylistOverview.scss";
 
 import { BsSearch } from "react-icons/bs";
 import Image from "next/image";
+import { getPlaylistsAction } from "../actions";
 
-function PlaylistOverview({ managerOverview }) {
+function PlaylistOverview() {
 	const [playlists, setPlaylists] = useState([]);
 
 	const searchInputRef = useRef(null);
@@ -16,30 +17,28 @@ function PlaylistOverview({ managerOverview }) {
 	const [searchInput, setSearchInput] = useState("");
 
 	const loadAllPlaylists = async () => {
-		const res = await fetch("/api/playlist", {
-			next: {
-				tags: ["playlists"],
-				revalidate: 10,
-			},
-		});
-		const data = await res.json();
-
-		setPlaylists(data);
+		console.log(await getPlaylistsAction());
+		setPlaylists(await getPlaylistsAction());
 	};
 
 	useEffect(() => {
 		loadAllPlaylists();
+		console.log(playlists);
 	}, []);
 
-	const filteredPlaylists = playlists.filter((playlist) => {
-		if (searchInput === "") {
-			return playlist;
-		} else if (
-			playlist.name.toLowerCase().includes(searchInput.toLowerCase())
-		) {
-			return playlist;
-		}
-	});
+	const filteredPlaylists = playlists.data
+		? playlists.data.filter((playlist) => {
+				if (searchInput === "") {
+					return playlist;
+				} else if (
+					playlist.name
+						.toLowerCase()
+						.includes(searchInput.toLowerCase())
+				) {
+					return playlist;
+				}
+		  })
+		: [];
 
 	const showSearch = () => {
 		setHideSearch(!hideSearch);
@@ -66,15 +65,16 @@ function PlaylistOverview({ managerOverview }) {
 						onChange={(e) => setSearchInput(e.target.value)}
 						type="text"
 						placeholder="Search"
-						// disabled={hideSearch}
+						disabled={hideSearch}
 						className={hideSearch ? "hide" : "show"}
 					/>
 				</div>
 				<h2>Playlists</h2>
 				<div className="playlist-list">
 					<div className="row">
-						{filteredPlaylists.length === 0 &&
-						playlists.length !== 0 ? (
+						{playlists.status != 200 &&
+						playlists.data !== undefined &&
+						filteredPlaylists.length === 0 ? (
 							<div>No playlists found</div>
 						) : (
 							filteredPlaylists.map((playlist) => (
