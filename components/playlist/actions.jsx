@@ -151,7 +151,7 @@ export async function addPlaylistAction(playlist) {
 		return {
 			status: 400,
 			message:
-				"The coverUrl source is invalid, should be from: https://res.cloudinary.com/do67csxma/image/upload/",
+				"The coverUrl source is invalid",
 		};
 	}
 
@@ -224,7 +224,7 @@ export async function editPlaylistAction(playlist) {
 			return {
 				status: 400,
 				message:
-					"The coverUrl source is invalid, should be from: https://res.cloudinary.com/do67csxma/image/upload/",
+					"The coverUrl source is invalid",
 			};
 		}
 	}
@@ -249,7 +249,7 @@ export async function editPlaylistAction(playlist) {
 				)
 					return {
 						status: 400,
-						message: `The coverUrl '${song.coverUrl}' is invalid, should be from: https://res.cloudinary.com/do67csxma/image/upload/ `,
+						message: `The coverUrl '${song.coverUrl}' is invalid `,
 					};
 			}
 
@@ -258,7 +258,7 @@ export async function editPlaylistAction(playlist) {
 				if (!song.songUrl.includes("https://soundcloud.com/"))
 					return {
 						status: 400,
-						message: `The songUrl '${song.songUrl}' is invalid, should be from https://soundcloud.com/`,
+						message: `The songUrl '${song.songUrl}' is invalid`,
 					};
 			}
 		}
@@ -389,7 +389,7 @@ export async function addSongAction(song) {
 	if (!songUrl.includes("https://soundcloud.com/"))
 		return {
 			status: 400,
-			message: "Invalid songUrl, should be from: https://soundcloud.com/",
+			message: "Invalid songUrl",
 		};
 
 	//Check if the coverUrl is from the url https://res.cloudinary.com/do67csxma/image/upload/
@@ -399,7 +399,7 @@ export async function addSongAction(song) {
 		return {
 			status: 400,
 			message:
-				"Invalid coverUrl, should be from: https://res.cloudinary.com/do67csxma/",
+				"Invalid coverUrl",
 		};
 
 	// ##### Check the playlist song limit #####

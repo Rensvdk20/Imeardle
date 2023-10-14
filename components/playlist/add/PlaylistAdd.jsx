@@ -25,7 +25,7 @@ function PlaylistAdd() {
 		const coverUrl = newPlaylistImage;
 
 		if (name.length < 3) return messageNameTooShort();
-		if (newPlaylistImage.length < 1) return messageNoImageSelected();
+		if (newPlaylistImage === "/img/placeholder.jpeg") return messageNoImageSelected();
 
 		toast.loading("Adding playlist...", {
 			id: "message",
