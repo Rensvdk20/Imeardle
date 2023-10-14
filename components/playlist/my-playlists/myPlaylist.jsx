@@ -30,7 +30,7 @@ function MyPlaylist() {
 						) : (
 							playlists.data?.map((playlist) => (
 								<div
-									className="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3"
+									className="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4 col-xxl-3"
 									key={playlist.id}
 								>
 									<Link

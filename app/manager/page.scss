@@ -10,13 +10,13 @@
 
     @media #{$lg} {
         .column-left {
-            height: 50vh;
+            height: 500px;
         }
     }
 
     @media #{$sm} {
         .column-left {
-            height: 35vh;
+            height: 375px;
             margin: 40px 0;
 
             form {
