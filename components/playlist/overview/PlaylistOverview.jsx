@@ -17,13 +17,11 @@ function PlaylistOverview() {
 	const [searchInput, setSearchInput] = useState("");
 
 	const loadAllPlaylists = async () => {
-		console.log(await getPlaylistsAction());
 		setPlaylists(await getPlaylistsAction());
 	};
 
 	useEffect(() => {
 		loadAllPlaylists();
-		console.log(playlists);
 	}, []);
 
 	const filteredPlaylists = playlists.data

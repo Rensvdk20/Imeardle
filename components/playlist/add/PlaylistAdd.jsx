@@ -77,13 +77,12 @@ function PlaylistAdd() {
 							showSkipCropButton: false,
 						}}
 						onError={(error) => {
-							console.log(error);
+							console.error(error);
 							messageUploadImageError();
 						}}
 						onUpload={(result) => {
 							setPlaylistImage(result.info.secure_url);
 							messageUploadImageSuccess();
-							console.log(result);
 						}}
 					>
 						{({ open }) => {
