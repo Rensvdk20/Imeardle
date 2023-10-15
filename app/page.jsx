@@ -6,10 +6,6 @@ import ImeardlePlayer from "../components/player/ImeardlePlayer";
 
 import "./page.scss";
 
-export const metadata = {
-	title: "Imeardle - Guess the song",
-};
-
 function App() {
 	const searchParams = useSearchParams();
 	const playlistId = searchParams.get("playlistId");
