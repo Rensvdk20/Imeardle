@@ -7,6 +7,7 @@ const nextConfig = {
 	images: {
 		domains: ["res.cloudinary.com"],
 	},
+	target: 'serverless',
 };
 
 module.exports = nextConfig;
