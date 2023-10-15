@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
     provider     = "mysql"
-    url          = "mysql://127.0.0.1:3306/imeardle"
+    url          = env("DATABASE_URL")
     relationMode = "prisma"
 }
 
