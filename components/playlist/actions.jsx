@@ -32,8 +32,6 @@ export async function isPlaylistOwner(playlistId) {
 export async function getPlaylistsAction() {
 	const playlists = await prisma.playlist.findMany();
 
-	console.log(playlists);
-
 	if (playlists) {
 		if (!playlists)
 			return {
@@ -318,7 +316,6 @@ export async function editPlaylistAction(playlist) {
 export async function deletePlaylistAction(playlistId) {
 	// ##### Auth #####
 	const userId = await userAuth();
-	console.log("playlistId", playlistId);
 
 	try {
 		const deletedPlaylist = await prisma.playlist.delete({
@@ -361,7 +358,6 @@ export async function addSongAction(song) {
 
 	//Check if the playlist exists
 	const playlist = await getPlaylistAction(playlistId);
-	console.log("playlist", playlist);
 	if (playlist.status === 404) {
 		return {
 			status: 404,

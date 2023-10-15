@@ -102,7 +102,6 @@ const ImeardlePlayer = (params) => {
         } else {
             //Playlist selected
             playlist = await getPlaylistAction(params.playlistId, true);
-            console.log(playlist);
             if (playlist.status === 200) {
                 setCurrentPlaylist(playlist.data.name)
                 playlistSongs = playlist.data.Songs;
@@ -148,7 +147,6 @@ const ImeardlePlayer = (params) => {
 
 		const randomSong = playlistSongs[Math.floor(Math.random() * playlistSongs.length)];
 		setCurrentSong(randomSong);
-		console.log(randomSong);
 	};
 
 	// ##### User input handlers #####
@@ -271,12 +269,9 @@ const ImeardlePlayer = (params) => {
 			played: e.played,
 		});
 
-		console.log("guessState", guessState);
 		if (e.playedSeconds > guessState) {
 			handleStartFromBeginning();
 		}
-
-		console.log(playerState);
 	};
 
 	// ##### Player controls #####
@@ -286,7 +281,6 @@ const ImeardlePlayer = (params) => {
 			...playerState,
 			playing: !playerState.playing,
 		});
-		console.log(playerState);
 	};
 
 	const handlePlay = () => {

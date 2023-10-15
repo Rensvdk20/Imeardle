@@ -188,8 +188,6 @@ export default function EditPlaylist({ playlistId }) {
 			toast.success("Playlist edited successfully!", {
 				id: "editPlaylist",
 			});
-
-		console.log(formPlaylist);
 	};
 
 	const deletePlaylist = async () => {
@@ -262,7 +260,7 @@ export default function EditPlaylist({ playlistId }) {
 										showSkipCropButton: false,
 									}}
 									onError={(error) => {
-										console.log(error);
+										console.error(error);
 										messageUploadImageError();
 									}}
 									onUpload={(result) => {
@@ -270,7 +268,6 @@ export default function EditPlaylist({ playlistId }) {
 											result.info.secure_url
 										);
 										messageUploadImageSuccess();
-										console.log(result);
 									}}
 								>
 									{({ open }) => {
@@ -563,13 +560,12 @@ export default function EditPlaylist({ playlistId }) {
 									showSkipCropButton: false,
 								}}
 								onError={(error) => {
-									console.log(error);
+									console.error(error);
 									messageUploadImageError();
 								}}
 								onUpload={(result) => {
 									setNewSongImage(result.info.secure_url);
 									messageUploadImageSuccess();
-									console.log(result);
 								}}
 							>
 								{({ open }) => {
@@ -681,7 +677,7 @@ export default function EditPlaylist({ playlistId }) {
 					showSkipCropButton: false,
 				}}
 				onError={(error) => {
-					console.log(error);
+					console.error(error);
 					messageUploadImageError();
 				}}
 				onUpload={(result) => {
@@ -697,7 +693,6 @@ export default function EditPlaylist({ playlistId }) {
 
 					setPlaylist(tempPlaylist);
 					messageUploadImageSuccess();
-					console.log(result);
 				}}
 			>
 				{({ open }) => {
