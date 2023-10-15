@@ -199,6 +199,10 @@
 	.player {
 		height: 60vh;
 
+		&-playing-text {
+			top: 12vh;
+		}
+
 		.player-container {
 			.col-controls {
 				@media #{$sm} {

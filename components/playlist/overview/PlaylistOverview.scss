@@ -7,12 +7,12 @@
         }
 
         &-search {
+            display: flex;
             margin: 20px 0 20px 5px;
 
             &-icon {
                 cursor: pointer;
                 display: inline-block;
-                width: fit-content;
                 
                 svg {
                     margin-right: 10px;
@@ -114,6 +114,18 @@
                     font-size: 1.1rem;
                     font-weight: bold;
                     text-shadow: 2px 2px #2c2c2c;
+                }
+            }
+        }
+    }
+    
+    @media #{$sm} {
+        .playlist {
+            &-search {
+                input[type=text] {
+                    &.show {
+                        width: 100% !important;
+                    }
                 }
             }
         }

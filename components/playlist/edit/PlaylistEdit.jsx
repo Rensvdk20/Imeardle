@@ -87,14 +87,20 @@ export default function EditPlaylist({ playlistId }) {
 		if (title !== "" || songUrl !== "") {
 			if (title.length < 3)
 				return toast.error(
-					"The title must be at least 3 characters long"
+					"The title must be at least 3 characters long", {
+						id: "addSong",
+					}
 				);
 
 			if (!songUrl.includes("https://soundcloud.com/"))
-				return toast.error("The song URL must be a Soundcloud URL");
+				return toast.error("The song URL must be a Soundcloud URL", {
+					id: "addSong",
+				});
 
 			if (newSongImage.length === 0)
-				return toast.error("No image selected");
+				return toast.error("No image selected", {
+					id: "addSong",
+				});
 
 			const result = await addSongAction({
 				title: title,
