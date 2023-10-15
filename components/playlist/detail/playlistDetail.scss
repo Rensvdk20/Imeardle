@@ -1,0 +1,71 @@
+@import '../../../shared/styles/global';
+
+.playlistDetail {
+    .btn {
+        border: 1px solid $white;
+
+        &:hover {
+            border: 1px solid darken($white, 30);
+            color: darken($white, 30);
+        }
+    }
+
+    &-select {
+        position: absolute;
+    }
+
+    .playlist {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        margin-bottom: 45px;
+    
+        h1 {
+            margin-top: 20px;
+        }
+    
+        img {
+            width: 400px;
+            border-radius: 50%;
+        }
+
+        // @media #{$md} {
+        //     // margin-top: 60px;
+        // }
+
+        @media #{$sm} {
+            img {
+                width: 100%;
+            }
+        }
+    }
+    
+    .songs {
+        h2 {
+            margin-bottom: 15px;
+        }
+    
+        .song {
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 5px rgb(0 0 0 / 20%);
+            background-color: lighten($primary, .5);
+            border-radius: 5px;
+        }
+    }
+
+    #selectPlaylistMobile {
+        margin-top: 10px;
+        display: none;;
+    }
+
+    @media #{$md} {
+        #selectPlaylistDesktop {
+            display: none;
+        }
+
+        #selectPlaylistMobile {
+            display: block;
+        }
+    }
+}

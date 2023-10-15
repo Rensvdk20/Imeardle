@@ -1,0 +1,74 @@
+@import "/shared/styles/global";
+
+.playlistAdd {
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: fit-content;
+        padding: 20px 30px;
+        background-color: lighten($primary, 2);
+        border-radius: 10px;
+
+        button {
+            padding: 0.4rem 2rem;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+        }
+
+        .form-item {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+
+            span {
+                display: block;
+                font-size: 1.1rem;
+                margin-bottom: 5px;
+            }
+
+            input[type=text] {
+                width: 325px;
+                padding: 5px 7.5px;
+                color: $white;
+                background-color: lighten($primary, 10);
+                border-radius: 5px;
+                border: none;
+    
+                &::placeholder {
+                    color: darken($white, 30);
+                }
+    
+                &:focus {
+                    outline: none;
+                }
+            }
+
+            &-img {
+                position: relative;
+                height: 150px;
+                width: 50%;
+                border-radius: 50%;
+
+                img {
+                    width: 100%;
+                    border-radius: 50%;
+                }
+            }
+        }
+    }
+
+    @media #{$xl} {
+        form {
+            .form-item {
+                &-img {
+                    width: 150px;
+                }
+            }
+        }
+    }
+}

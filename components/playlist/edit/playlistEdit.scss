@@ -1,0 +1,314 @@
+@import "/shared/styles/global";
+
+.playlistEdit {
+    .form-column {
+        display: flex;
+        align-items: center;
+        height: 80vh;
+        
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            width: min-content;
+            padding: 20px 30px;
+            background-color: lighten($primary, .7);
+            box-shadow: 0 0 5px rgb(0 0 0 / 20%);
+            border-radius: 10px;
+
+            h2 {
+                margin-bottom: 25px;
+            }
+    
+            button {
+                padding: 0.4rem 2rem;
+                width: 100%;
+            }
+    
+            .form {
+                &-item {
+                    display: flex;
+                    justify-content: center;
+                    width: 100%;
+                    margin-bottom: 20px;
+        
+                    span {
+                        display: block;
+                        font-size: 1.1rem;
+                        margin-bottom: 5px;
+                    }
+        
+                    input[type=text] {
+                        width: 325px;
+                        padding: 5px 7.5px;
+                        color: $white;
+                        background-color: lighten($primary, 5);
+                        border-radius: 5px;
+                        border: none;
+            
+                        &::placeholder {
+                            color: darken($white, 30);
+                        }
+            
+                        &:focus {
+                            outline: none;
+                        }
+                    }
+
+                    &-img {
+                        position: relative;
+                        height: 150px;
+                        width: 50%;
+                        border-radius: 50%;
+
+                        img {
+                            width: 100%;
+                            border-radius: 50%;
+                        }
+                    }
+                }
+            }
+        }
+
+        @media #{$xxl} {
+            .form-container {
+                position: relative;
+                width: 100%;
+                padding: 20px 16px;
+
+                .form-item {
+                    label {
+                        width: 100%;
+                    }
+
+                    input[type=text] {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+
+        @media #{$xl} {
+            .form-container {
+                .form-item {
+                    &-img {
+                        width: 150px;
+                    }
+                }
+            }
+        }
+
+        @media #{$md} {
+            height: auto;
+            margin: 40px 0;
+        }
+    }
+
+    .list-column {
+        .songs {
+            h2 {
+                margin-bottom: 15px;
+            }
+
+            .song-options {
+                display: flex;
+                margin-bottom: 10px;
+
+                > button {
+                    display: flex;
+                    align-items: center;    
+                }
+
+                &-delete {
+                    margin-left: auto;
+                }
+            }
+        
+            .song {
+                padding: 10px 10px 10px 5px;
+                margin-bottom: 10px;
+                box-shadow: 0 0 5px rgb(0 0 0 / 20%);
+                background-color: lighten($primary, .7);
+                border-radius: 5px;
+
+                input[type=text] {
+                    width: 100%;
+                    background-color: lighten($primary, .7);
+                    color: $white;
+                    border: none;
+                    border-bottom: 1px solid $white;
+                    transition: border-bottom 125ms ease-in-out;
+                    
+                    &:focus{
+                        outline: none;
+                    }
+
+                    &:read-only {
+                        border-bottom: 1px solid transparent;
+                    }
+                }
+
+                &-top {
+                    display: grid;
+                    grid-template-columns: 30px auto 50px;
+                    align-items: center;
+                }
+
+                &-collapse {
+                    cursor: pointer;
+                    display: flex;
+                    padding: 0px 5px;
+
+                    svg {
+                        margin: 2px 2px 2px 0;
+                        transition: transform .15s ease-in-out;
+                    }
+                }
+
+                &-title {
+                    display: inline-block;
+                }
+
+                &-edit, &-delete-option {
+                    svg {
+                        cursor: pointer;
+                    }
+
+                    > #cross {
+                        margin-left: 4px;
+                    }
+
+                    &.hide {
+                        display: none;
+                    }
+                }
+
+                &-extra {
+                    display: grid;
+                    grid-template-columns: 25px auto;
+                    align-items: center;
+                    row-gap: 10px;
+                    margin-top: 5px;
+                    padding-left: 5px;
+
+                    &.collapse:not(.show) {
+                        display: none;
+                    }
+                }
+
+                &-upload {
+                    position: relative;
+                    height: 230px;
+                }
+            }
+        }
+
+        @media #{$xxl} {
+            .songs {
+                .song {
+                    &-upload {
+                        height: 180px;
+                    }
+                }
+            }
+        }
+
+        @media #{$lg} {
+            .songs {
+                .song {
+                    &-upload {
+                        height: 300px;
+                    }
+                }
+            }
+        }
+
+        @media #{$md} {
+            .songs  {
+                .song {
+                    &-top {
+                        grid-template-columns: 30px auto 100px;
+                    }
+
+                    &-edit {
+                        display: flex;
+                        justify-content: space-evenly;
+                        margin-top: 9px;
+                    }
+
+                    &-collapse {
+                        scale: 1.75;
+                    }
+                }
+            }
+        }
+    }
+
+    .rotate-90 {
+        transform: rotate(90deg);
+    }
+}
+
+.modal-add-song {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    span {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    label {
+        width: 100%;
+
+        > input[type=text] {
+            width: 100%;
+            background-color: lighten($primary, 5);
+            margin-bottom: 10px;
+            border-radius: 5px;
+            color: #FFFFFF;
+            border: none;
+    
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+
+    &-image {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        
+        button {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        img {
+            border-radius: 5px;
+        }
+    }
+}
+
+.modal-delete-song {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 15px 105px;
+
+    .delete-icon-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100px;
+        background-color: lighten($primary, 5);
+        width: 100px;
+        border-radius: 50%;
+        margin: 15px 0px 30px 0px;
+    }
+}

@@ -1,0 +1,149 @@
+$white: #FFFFFF;
+$gray: #999999;
+$primary: #252526;
+$secondary: #EB3372;
+
+$xxl: "only screen and (max-width : 1400px)";
+$xl: "only screen and (max-width : 1200px)";
+$lg: "only screen and (max-width : 992px)";
+$md: "only screen and (max-width : 768px)";
+$sm: "only screen and (max-width : 576px)";
+$xs: "only screen and (max-width : 0px)";
+
+@font-face {
+    font-family: 'Typold Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Typold Regular'), url('../../public/fonts/Typold_Regular.woff') format('woff');
+}
+
+// ##### Default #####
+
+body {
+    color: $white;
+    background-color: $primary;
+    font-family: 'Typold Regular';
+}
+
+nav {
+    #navbarNav {
+        position: relative;
+    }
+
+    .nav-right {
+        position: absolute;
+        right: 0;
+    }
+
+    .nav-item {
+        .nav-link {
+            cursor: pointer;
+        }
+    }
+}
+
+a {
+    color: $white;
+    text-decoration: none;
+
+    &:hover {
+        color: $white;
+    }
+}
+
+#player {
+    position: absolute;
+    visibility: hidden;
+    width: 10px !important;
+    height: 10px !important;
+}
+
+.changeable-image-container {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 100%;
+
+    img {
+        transition: opacity .2s ease-in-out;
+    }
+    
+    &:hover img {
+        opacity: .5;
+    }
+
+    &::after {
+        content: "\270F";
+        display: block;
+        position: absolute;
+        pointer-events: none;
+        transform: rotate(45deg);
+        transition: opacity .2s ease-in-out;
+        scale: 4;
+        opacity: 0;
+    }
+
+    &:hover::after {
+        opacity: 1;
+    }
+}
+
+// Buttons
+.btn {
+    color: $white;
+    outline: none;
+}
+
+.btn-primary {
+    background-color: lighten($primary, 1);
+    box-shadow: 0 0 5px rgb(0 0 0 / 20%);
+    border: none;
+
+    &:hover {
+        background-color: lighten($primary, 3);
+    }
+
+    &:active, &:focus-visible {
+        background-color: darken($primary, 1) !important;
+    }
+}
+
+.btn-secondary {
+    background-color: $secondary;
+    border: none;
+
+    &:hover {
+        background-color: darken($secondary, 10);
+    }
+
+    &:active, &:focus-visible {
+        background-color: darken($secondary, 15) !important;
+    }
+}
+
+.btn-controls {
+    text-align: center;
+    width: fit-content;
+    transition: all ease-in-out 1s;
+
+    &:disabled {
+        opacity: 1;
+    }
+}
+
+// Bootstrap
+.modal {
+    &-content {
+        color: $white;
+        background-color: $primary;
+    }
+}
+
+// Toaster
+.toaster {
+    margin: 35px 25px 0 0;
+    background-color: $primary !important;
+    color: $white !important;
+}
