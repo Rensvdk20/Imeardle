@@ -1,12 +1,38 @@
-body {
-    .playerContainer {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: calc(100vh - 59.2px);
+@import "../shared/styles/global.scss";
 
-        .player {
-            margin-bottom: 80px;
-        }
-    }
+body {
+	.playerContainer {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: calc(100vh - 59.2px);
+
+		.player {
+			margin-bottom: 80px;
+		}
+	}
+
+	.footer {
+		display: flex;
+		position: fixed;
+		bottom: 10px;
+		left: 15px;
+
+		&-divider {
+			padding: 0 5px;
+		}
+
+		a {
+			color: $white;
+			transition: 200ms ease-in-out;
+
+			&:hover {
+				color: darken($white, 25);
+			}
+		}
+
+		#github {
+			margin-bottom: 2px;
+		}
+	}
 }

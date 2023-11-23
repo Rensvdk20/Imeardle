@@ -5,11 +5,11 @@
 	justify-content: center;
 	width: 100%;
 
-    &-playing-text {
-        position: absolute;
-        top: 20px;
-        width: fit-content;
-    }
+	&-playing-text {
+		position: absolute;
+		top: 20px;
+		width: fit-content;
+	}
 
 	&-container {
 		margin-top: 40px;
@@ -54,12 +54,12 @@
 			display: flex;
 			justify-content: center;
 
-            .btn-controls {
-                cursor: pointer;
-            }
+			.btn-controls {
+				cursor: pointer;
+			}
 
 			.btn-randomize {
-                cursor: pointer;
+				cursor: pointer;
 				position: absolute;
 				right: 0;
 
@@ -130,35 +130,35 @@
 					}
 				}
 
-                .btn-skip {
-                    cursor: pointer;
-                    display: flex;
-                    position: absolute;
-                    height: 100%;
-                    align-self: center;
-                    right: 15px;
-                    scale: 1.2;
+				.btn-skip {
+					cursor: pointer;
+					display: flex;
+					position: absolute;
+					height: 100%;
+					align-self: center;
+					right: 15px;
+					scale: 1.2;
 
-                    > svg {
-                        align-self: center;
-                    }
-                }
+					> svg {
+						align-self: center;
+					}
+				}
 			}
 		}
 	}
 
-    .loader {
-        animation: rotation 8s infinite linear;
-    }
+	.loader {
+		animation: rotation 8s infinite linear;
+	}
 
-    @keyframes rotation {
-        from {
-          transform: rotate(0deg);
-        }
-        to {
-          transform: rotate(359deg);
-        }
-      }
+	@keyframes rotation {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(359deg);
+		}
+	}
 }
 
 .modal {
@@ -183,25 +183,9 @@
 	}
 }
 
-#github {
-	color: $white;
-	position: fixed;
-	bottom: 10px;
-	left: 15px;
-
-    &:hover {
-        transition: 200ms ease-in-out;
-        color: darken($white, 25);
-    }
-}
-
 @media #{$sm} {
 	.player {
 		height: 60vh;
-
-		&-playing-text {
-			top: 12vh;
-		}
 
 		.player-container {
 			.col-controls {
