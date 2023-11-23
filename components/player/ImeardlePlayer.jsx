@@ -6,7 +6,6 @@ import {
 	BsPlayCircle,
 	BsPauseCircle,
 	BsMusicNoteBeamed,
-	BsGithub,
 	BsFillSkipForwardFill,
 } from "react-icons/bs";
 
@@ -79,7 +78,7 @@ const ImeardlePlayer = (params) => {
 
 	useEffect(() => {
 		//Get all songs
-        loadPlaylist();
+		loadPlaylist();
 
 		document.addEventListener("keydown", function (e) {
 			if (e.keyCode === "179") {
@@ -88,40 +87,40 @@ const ImeardlePlayer = (params) => {
 		});
 	}, []);
 
-    // Load the playlist async from the database
-    const loadPlaylist = async () => {
-        let playlist;
+	// Load the playlist async from the database
+	const loadPlaylist = async () => {
+		let playlist;
 
-        if(params.playlistId === null) {
-            //No playlist selected
-            playlist = await getRandomPlaylistAction();
+		if (params.playlistId === null) {
+			//No playlist selected
+			playlist = await getRandomPlaylistAction();
 			if (playlist.status === 200) {
-                setCurrentPlaylist("Random");
-                playlistSongs = playlist.data.Songs;
+				setCurrentPlaylist("Random");
+				playlistSongs = playlist.data.Songs;
 			}
-        } else {
-            //Playlist selected
-            playlist = await getPlaylistAction(params.playlistId, true);
-            if (playlist.status === 200) {
-                setCurrentPlaylist(playlist.data.name)
-                playlistSongs = playlist.data.Songs;
-            }
-        }
+		} else {
+			//Playlist selected
+			playlist = await getPlaylistAction(params.playlistId, true);
+			if (playlist.status === 200) {
+				setCurrentPlaylist(playlist.data.name);
+				playlistSongs = playlist.data.Songs;
+			}
+		}
 
-        if(playlist.status === 404) {
-            //Playlist not found
-            toast.error("Playlist not found");
-            return setCurrentPlaylist("Playlist not found");
-        }
+		if (playlist.status === 404) {
+			//Playlist not found
+			toast.error("Playlist not found");
+			return setCurrentPlaylist("Playlist not found");
+		}
 
-        randomizeSong();
+		randomizeSong();
 
-        setPlayerState({
-            ...state,
-            playing: false,
-            loaded: true,
-        });
-    }
+		setPlayerState({
+			...state,
+			playing: false,
+			loaded: true,
+		});
+	};
 
 	// Randomize a song from the given songs array
 	const randomizeSong = (play = true) => {
@@ -145,7 +144,8 @@ const ImeardlePlayer = (params) => {
 			handlePlay();
 		}
 
-		const randomSong = playlistSongs[Math.floor(Math.random() * playlistSongs.length)];
+		const randomSong =
+			playlistSongs[Math.floor(Math.random() * playlistSongs.length)];
 		setCurrentSong(randomSong);
 	};
 
@@ -155,15 +155,17 @@ const ImeardlePlayer = (params) => {
 		setUserInput(lowerCaseInput);
 	};
 
-	const filteredSongs = playlistSongs ? playlistSongs
-		.filter((song) => {
-			if (userInput.input === "") {
-				return song;
-			} else {
-				return song.title.toLowerCase().includes(userInput);
-			}
-		})
-		.slice(0, 5) : [];
+	const filteredSongs = playlistSongs
+		? playlistSongs
+				.filter((song) => {
+					if (userInput.input === "") {
+						return song;
+					} else {
+						return song.title.toLowerCase().includes(userInput);
+					}
+				})
+				.slice(0, 5)
+		: [];
 
 	const handleGuessOnClick = (e) => {
 		handleGuess(e.target.getAttribute("data-title"));
@@ -524,13 +526,6 @@ const ImeardlePlayer = (params) => {
 						/>
 					</Modal>
 				</div>
-				<a
-					href="https://github.com/Rensvdk20"
-					rel="noreferrer"
-					target="_blank"
-				>
-					<BsGithub size={20} id="github" />
-				</a>
 			</div>
 			<Toaster
 				position="top-right"
