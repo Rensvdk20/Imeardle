@@ -59,6 +59,11 @@ export default async function RootLayout({ children }) {
 										Playlists
 									</Link>
 								</li>
+								<li className="nav-item">
+									<Link className="nav-link" href="/about">
+										About
+									</Link>
+								</li>
 							</ul>
 
 							<ul className="navbar-nav nav-right">
