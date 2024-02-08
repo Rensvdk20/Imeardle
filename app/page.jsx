@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import ImeardlePlayer from "../components/player/ImeardlePlayer";
 
 import { BsGithub } from "react-icons/bs";
+import { SiKofi } from "react-icons/si";
 
 import "./page.scss";
 
@@ -19,14 +20,22 @@ function App() {
 			</div>
 			<div className="footer">
 				<div className="footer-item">
-					<a href="https://github.com/Rensvdk20" target="_blank">
+					<a
+						href="https://github.com/Rensvdk20"
+						aria-label="Github"
+						target="_blank"
+					>
 						<BsGithub size={20} />
 					</a>
 				</div>
 				<div className="footer-divider">|</div>
 				<div className="footer-item">
-					<a href="/privacy-policy.html" target="_blank">
-						Privacy Policy
+					<a
+						href="https://ko-fi.com/rensvdk"
+						aria-label="Kofi"
+						target="_blank"
+					>
+						<SiKofi size={22} />
 					</a>
 				</div>
 			</div>
