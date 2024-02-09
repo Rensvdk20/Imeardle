@@ -87,7 +87,8 @@ export default function EditPlaylist({ playlistId }) {
 		if (title !== "" || songUrl !== "") {
 			if (title.length < 3)
 				return toast.error(
-					"The title must be at least 3 characters long", {
+					"The title must be at least 3 characters long",
+					{
 						id: "addSong",
 					}
 				);
@@ -606,7 +607,7 @@ export default function EditPlaylist({ playlistId }) {
 							Close
 						</Button>
 						<Button variant="secondary" type="submit">
-							New Song
+							Add song
 						</Button>
 					</Modal.Footer>
 				</form>
