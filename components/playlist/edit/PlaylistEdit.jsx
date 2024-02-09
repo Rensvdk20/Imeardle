@@ -310,7 +310,7 @@ export default function EditPlaylist({ playlistId }) {
 								</label>
 							</div>
 							<button className="btn btn-secondary" type="submit">
-								Submit
+								Save changes
 							</button>
 						</div>
 					</div>
