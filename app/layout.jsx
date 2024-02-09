@@ -7,6 +7,7 @@ import Login from "../components/auth/Login";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../shared/styles/global.scss";
 import { Fragment } from "react";
+import Image from "next/image.js";
 import Logout from "../components/auth/Logout";
 import Provider from "../components/auth/Provider";
 
@@ -69,6 +70,14 @@ export default async function RootLayout({ children }) {
 							<ul className="navbar-nav nav-right">
 								{session && session.user ? (
 									<Fragment>
+										<li className="nav-item">
+											<Image
+												className="profile-pic"
+												src={session.user.image}
+												width={25}
+												height={25}
+											/>
+										</li>
 										<li className="nav-item">
 											<Link
 												className="nav-link"

@@ -25,7 +25,8 @@ function PlaylistAdd() {
 		const coverUrl = newPlaylistImage;
 
 		if (name.length < 3) return messageNameTooShort();
-		if (newPlaylistImage === "/img/placeholder.jpeg") return messageNoImageSelected();
+		if (newPlaylistImage === "/img/placeholder.jpeg")
+			return messageNoImageSelected();
 
 		toast.loading("Adding playlist...", {
 			id: "message",
@@ -118,7 +119,7 @@ function PlaylistAdd() {
 					</label>
 				</div>
 				<button className="btn btn-secondary" type="submit">
-					Submit
+					Add playlist
 				</button>
 			</form>
 			<Toaster
