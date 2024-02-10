@@ -18,20 +18,20 @@ function PlaylistDetail({ playlistId }) {
 	return (
 		<div className="playlistDetail">
 			{playlist.data?.Songs && playlist.data?.Songs.length !== 0 ? (
-				<button
-					className="btn playlistDetail-select"
-					id="selectPlaylistDesktop"
+				<Link
+					href={{
+						pathname: "/",
+						query: { playlistId },
+					}}
+					prefetch={false}
 				>
-					<Link
-						href={{
-							pathname: "/",
-							query: { playlistId },
-						}}
-						prefetch={false}
+					<button
+						className="btn playlistDetail-select"
+						id="selectPlaylistDesktop"
 					>
 						Use this playlist
-					</Link>
-				</button>
+					</button>
+				</Link>
 			) : (
 				""
 			)}
