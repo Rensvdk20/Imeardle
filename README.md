@@ -4,7 +4,7 @@
 Imeardle is a web application where users can guess the song based on a short audio clip. This project is built using Next.js and integrates with various services such as Cloudinary for media storage and Google for authentication.
 
 ## Technologies
-- **[Next.js 13](https://nextjs.org/)**
+- **[Next.js 14](https://nextjs.org/)**
 - **[Prisma](https://www.prisma.io/)**
 - **[Scss](https://sass-lang.com/)**
 
