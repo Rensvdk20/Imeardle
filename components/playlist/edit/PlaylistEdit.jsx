@@ -282,6 +282,7 @@ export default function EditPlaylist({ playlistId }) {
 													className="playlist-image"
 													fill={true}
 													src={newPlaylistImage}
+													unoptimized={true}
 													priority
 													sizes="200px"
 													onClick={handleOnClick}
