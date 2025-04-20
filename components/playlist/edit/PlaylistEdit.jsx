@@ -264,7 +264,7 @@ export default function EditPlaylist({ playlistId }) {
 										console.error(error);
 										messageUploadImageError();
 									}}
-									onUpload={(result) => {
+									onSuccess={(result) => {
 										setNewPlaylistImage(
 											result.info.secure_url
 										);
@@ -565,7 +565,7 @@ export default function EditPlaylist({ playlistId }) {
 									console.error(error);
 									messageUploadImageError();
 								}}
-								onUpload={(result) => {
+								onSuccess={(result) => {
 									setNewSongImage(result.info.secure_url);
 									messageUploadImageSuccess();
 								}}
@@ -682,7 +682,7 @@ export default function EditPlaylist({ playlistId }) {
 					console.error(error);
 					messageUploadImageError();
 				}}
-				onUpload={(result) => {
+				onSuccess={(result) => {
 					const tempPlaylist = JSON.parse(JSON.stringify(playlist));
 					const songId =
 						uploadWidgetRef.current.getAttribute("data-song-id");
