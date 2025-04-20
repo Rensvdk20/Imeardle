@@ -81,7 +81,7 @@ function PlaylistAdd() {
 							console.error(error);
 							messageUploadImageError();
 						}}
-						onUpload={(result) => {
+						onSuccess={(result) => {
 							setPlaylistImage(result.info.secure_url);
 							messageUploadImageSuccess();
 						}}
