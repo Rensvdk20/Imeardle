@@ -57,6 +57,7 @@ const ImeardlePlayer = (params) => {
 
 	// Current song
 	const [currentSong, setCurrentSong] = useState({
+		id: null,
 		songUrl: "",
 		title: "",
 		coverUrl: "",
@@ -383,6 +384,13 @@ const ImeardlePlayer = (params) => {
 			setTimeout(() => {
 				fire();
 			}, 500);
+
+			// Remove song from playlist
+			playlistSongs = playlistSongs.filter(
+				(song) => song.id !== currentSong.id
+			);
+
+			if(playlistSongs.length === 0) loadPlaylist();
 		}
 	};
 
