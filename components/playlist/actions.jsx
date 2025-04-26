@@ -318,6 +318,10 @@ export async function deletePlaylistAction(playlistId) {
 	const userId = await userAuth();
 
 	try {
+		await prisma.song.deleteMany({
+			where: { playlistId },
+		});
+
 		const deletedPlaylist = await prisma.playlist.delete({
 			where: {
 				id_userId: {

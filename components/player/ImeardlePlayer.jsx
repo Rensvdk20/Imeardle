@@ -29,7 +29,7 @@ let playlistSongs = [];
 
 const state = {
 	playing: false,
-	volume: 1,
+	volume: 0.5,
 	playedInSeconds: 0,
 	played: 0,
 	loaded: false,
@@ -57,6 +57,7 @@ const ImeardlePlayer = (params) => {
 
 	// Current song
 	const [currentSong, setCurrentSong] = useState({
+		id: null,
 		songUrl: "",
 		title: "",
 		coverUrl: "",
@@ -77,6 +78,14 @@ const ImeardlePlayer = (params) => {
 	const [dropDownIndex, setDropDownIndex] = useState(0);
 
 	useEffect(() => {
+		const loadedVolume = localStorage.getItem("volume");
+		if(loadedVolume) {
+			setPlayerState((prevState) => ({
+				...prevState,
+				volume: parseFloat(loadedVolume),
+			}));
+		}
+
 		//Get all songs
 		loadPlaylist();
 
@@ -115,11 +124,11 @@ const ImeardlePlayer = (params) => {
 
 		randomizeSong();
 
-		setPlayerState({
-			...state,
+		setPlayerState((prevState) => ({
+			...prevState,
 			playing: false,
 			loaded: true,
-		});
+		}));
 	};
 
 	// Randomize a song from the given songs array
@@ -157,14 +166,14 @@ const ImeardlePlayer = (params) => {
 
 	const filteredSongs = playlistSongs
 		? playlistSongs
-				.filter((song) => {
-					if (userInput.input === "") {
-						return song;
-					} else {
-						return song.title.toLowerCase().includes(userInput);
-					}
-				})
-				.slice(0, 5)
+			.filter((song) => {
+				if (userInput.input === "") {
+					return song;
+				} else {
+					return song.title.toLowerCase().includes(userInput);
+				}
+			})
+			.slice(0, 5)
 		: [];
 
 	const handleGuessOnClick = (e) => {
@@ -265,11 +274,11 @@ const ImeardlePlayer = (params) => {
 
 	// ##### Player handlers #####
 	const handleProgress = (e) => {
-		setPlayerState({
-			...playerState,
+		setPlayerState((prevState) => ({
+			...prevState,
 			playedInSeconds: e.playedSeconds,
 			played: e.played,
-		});
+		}));
 
 		if (e.playedSeconds > guessState) {
 			handleStartFromBeginning();
@@ -279,29 +288,38 @@ const ImeardlePlayer = (params) => {
 	// ##### Player controls #####
 
 	const handlePlayPause = () => {
-		setPlayerState({
-			...playerState,
+		setPlayerState((prevState) => ({
+			...prevState,
 			playing: !playerState.playing,
-		});
+		}));
 	};
 
 	const handlePlay = () => {
-		setPlayerState({
-			...playerState,
+		setPlayerState((prevState) => ({
+			...prevState,
 			playing: true,
-		});
+		}));
 	};
 
 	const handleStartFromBeginning = () => {
-		setPlayerState({
-			...playerState,
+		setPlayerState((prevState) => ({
+			...prevState,
 			playing: false,
 			playedInSeconds: 0,
 			played: 0,
-		});
+		}));
 
 		playerRef?.current?.seekTo(0);
 	};
+
+	const handleVolume = (volume) => {
+		localStorage.setItem("volume", volume);
+		setPlayerState((prevState) => ({
+			...playerState,
+			volume: parseFloat(volume),
+		}));
+		console.log(playerState);
+	}
 
 	// ##### Player functions #####
 
@@ -314,9 +332,9 @@ const ImeardlePlayer = (params) => {
 
 	const refAnimationInstance = useRef(null);
 
-	const getInstance = useCallback((instance) => {
-		refAnimationInstance.current = instance;
-	}, []);
+	const onInit = ({ confetti }) => {
+		refAnimationInstance.current = confetti;
+	};
 
 	const makeShot = useCallback((particleRatio, opts) => {
 		refAnimationInstance.current &&
@@ -366,6 +384,13 @@ const ImeardlePlayer = (params) => {
 			setTimeout(() => {
 				fire();
 			}, 500);
+
+			// Remove song from playlist
+			playlistSongs = playlistSongs.filter(
+				(song) => song.id !== currentSong.id
+			);
+
+			if(playlistSongs.length === 0) loadPlaylist();
 		}
 	};
 
@@ -411,6 +436,7 @@ const ImeardlePlayer = (params) => {
 							</p>
 						</div>
 						<div className="col-12 col-controls">
+							<input type="range" min={0.01} max={1} step={0.01} value={volume} onChange={(e) => handleVolume(e.target.value)} className="btn-controls volume-slider" />
 							<div
 								className="btn-controls btn-play-pause"
 								onClick={handlePlayPause}
@@ -521,7 +547,7 @@ const ImeardlePlayer = (params) => {
 						</Modal.Footer>
 
 						<ReactCanvasConfetti
-							refConfetti={getInstance}
+							onInit={onInit}
 							style={canvasStyles}
 						/>
 					</Modal>
