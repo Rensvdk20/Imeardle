@@ -29,7 +29,7 @@ let playlistSongs = [];
 
 const state = {
 	playing: false,
-	volume: 1,
+	volume: 0.5,
 	playedInSeconds: 0,
 	played: 0,
 	loaded: false,
@@ -77,6 +77,14 @@ const ImeardlePlayer = (params) => {
 	const [dropDownIndex, setDropDownIndex] = useState(0);
 
 	useEffect(() => {
+		const loadedVolume = localStorage.getItem("volume");
+		if(loadedVolume) {
+			setPlayerState((prevState) => ({
+				...prevState,
+				volume: parseFloat(loadedVolume),
+			}));
+		}
+
 		//Get all songs
 		loadPlaylist();
 
@@ -115,11 +123,11 @@ const ImeardlePlayer = (params) => {
 
 		randomizeSong();
 
-		setPlayerState({
-			...state,
+		setPlayerState((prevState) => ({
+			...prevState,
 			playing: false,
 			loaded: true,
-		});
+		}));
 	};
 
 	// Randomize a song from the given songs array
@@ -265,11 +273,11 @@ const ImeardlePlayer = (params) => {
 
 	// ##### Player handlers #####
 	const handleProgress = (e) => {
-		setPlayerState({
-			...playerState,
+		setPlayerState((prevState) => ({
+			...prevState,
 			playedInSeconds: e.playedSeconds,
 			played: e.played,
-		});
+		}));
 
 		if (e.playedSeconds > guessState) {
 			handleStartFromBeginning();
@@ -279,29 +287,38 @@ const ImeardlePlayer = (params) => {
 	// ##### Player controls #####
 
 	const handlePlayPause = () => {
-		setPlayerState({
-			...playerState,
+		setPlayerState((prevState) => ({
+			...prevState,
 			playing: !playerState.playing,
-		});
+		}));
 	};
 
 	const handlePlay = () => {
-		setPlayerState({
-			...playerState,
+		setPlayerState((prevState) => ({
+			...prevState,
 			playing: true,
-		});
+		}));
 	};
 
 	const handleStartFromBeginning = () => {
-		setPlayerState({
-			...playerState,
+		setPlayerState((prevState) => ({
+			...prevState,
 			playing: false,
 			playedInSeconds: 0,
 			played: 0,
-		});
+		}));
 
 		playerRef?.current?.seekTo(0);
 	};
+
+	const handleVolume = (volume) => {
+		localStorage.setItem("volume", volume);
+		setPlayerState((prevState) => ({
+			...playerState,
+			volume: parseFloat(volume),
+		}));
+		console.log(playerState);
+	}
 
 	// ##### Player functions #####
 
@@ -411,6 +428,7 @@ const ImeardlePlayer = (params) => {
 							</p>
 						</div>
 						<div className="col-12 col-controls">
+							<input type="range" min={0.01} max={1} step={0.01} value={volume} onChange={(e) => handleVolume(e.target.value)} className="btn-controls volume-slider" />
 							<div
 								className="btn-controls btn-play-pause"
 								onClick={handlePlayPause}
