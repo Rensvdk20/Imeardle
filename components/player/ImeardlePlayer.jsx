@@ -157,14 +157,14 @@ const ImeardlePlayer = (params) => {
 
 	const filteredSongs = playlistSongs
 		? playlistSongs
-				.filter((song) => {
-					if (userInput.input === "") {
-						return song;
-					} else {
-						return song.title.toLowerCase().includes(userInput);
-					}
-				})
-				.slice(0, 5)
+			.filter((song) => {
+				if (userInput.input === "") {
+					return song;
+				} else {
+					return song.title.toLowerCase().includes(userInput);
+				}
+			})
+			.slice(0, 5)
 		: [];
 
 	const handleGuessOnClick = (e) => {
@@ -314,9 +314,9 @@ const ImeardlePlayer = (params) => {
 
 	const refAnimationInstance = useRef(null);
 
-	const getInstance = useCallback((instance) => {
-		refAnimationInstance.current = instance;
-	}, []);
+	const onInit = ({ confetti }) => {
+		refAnimationInstance.current = confetti;
+	};
 
 	const makeShot = useCallback((particleRatio, opts) => {
 		refAnimationInstance.current &&
@@ -521,7 +521,7 @@ const ImeardlePlayer = (params) => {
 						</Modal.Footer>
 
 						<ReactCanvasConfetti
-							refConfetti={getInstance}
+							onInit={onInit}
 							style={canvasStyles}
 						/>
 					</Modal>
