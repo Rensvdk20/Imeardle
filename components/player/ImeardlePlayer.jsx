@@ -216,7 +216,7 @@ const ImeardlePlayer = (params) => {
 		handlePlay();
 	};
 
-	const handleIncorrectGuess = () => {
+	const handleIncorrectGuess = (play = false) => {
 		setUserInput("");
 
 		setGuessesLeft(
@@ -224,6 +224,8 @@ const ImeardlePlayer = (params) => {
 		);
 		if (guessState < 20) {
 			increaseGuessState();
+			
+			if(play) handlePlay();
 		} else {
 			// No more guesses left
 			setGuessedState(true);
@@ -469,7 +471,7 @@ const ImeardlePlayer = (params) => {
 							<div className="search-box">
 								<div
 									className="btn-skip"
-									onClick={handleIncorrectGuess}
+									onClick={handleIncorrectGuess.bind(this, true)}
 								>
 									<BsFillSkipForwardFill />
 								</div>
