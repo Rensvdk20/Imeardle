@@ -155,3 +155,23 @@ a {
 	background-color: $primary !important;
 	color: $white !important;
 }
+
+@media #{$lg} {
+	nav {
+		.nav-right {
+			position: static;
+		}
+
+		.profile-pic {
+			display: none;
+		}
+	}
+}
+
+@media #{$sm} {
+	nav {
+		.navbar-brand {
+			visibility: hidden;
+		}
+	}
+}

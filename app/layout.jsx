@@ -10,6 +10,7 @@ import { Fragment } from "react";
 import Image from "next/image.js";
 import Logout from "../components/auth/Logout";
 import Provider from "../components/auth/Provider";
+import BootstrapClient from "../components/bootstrap/BootstrapClient";
 
 export const metadata = {
 	title: "Imeardle",
@@ -100,6 +101,7 @@ export default async function RootLayout({ children }) {
 					</div>
 				</nav>
 				<Provider>{children}</Provider>
+				<BootstrapClient />
 			</body>
 		</html>
 	);
