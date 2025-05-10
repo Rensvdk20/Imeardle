@@ -66,7 +66,7 @@ const ImeardlePlayer = (params) => {
 	const [currentPlaylist, setCurrentPlaylist] = useState("...");
 
 	// Guess states
-	const guessStates = [2, 4, 8, 13, 20];
+	const guessStates = [3, 6, 11, 18, 30];
 	const [guessState, setGuessState] = useState(guessStates[0]);
 	const [guessesLeft, setGuessesLeft] = useState(guessStates.length);
 	const [guessed, setGuessedState] = useState(false);
@@ -421,12 +421,12 @@ const ImeardlePlayer = (params) => {
 										width: playedInSeconds * 3.5 + "%",
 									}}
 								>
-									{guessStates.map((guessState, index) => (
+									{guessStates.slice(0, -1).map((guessState, index) => (
 										<div
 											key={index}
 											className="progress-bar-line"
 											style={{
-												width: guessState * 1.05 + "vw",
+												width: guessState + "vw",
 											}}
 										></div>
 									))}
