@@ -23,6 +23,7 @@ export const authOptions = {
 			return session;
 		},
 	},
+	allowDangerousEmailAccountLinking: true,
 };
 
 export default NextAuth(authOptions);
